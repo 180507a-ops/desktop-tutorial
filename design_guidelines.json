@@ -1,0 +1,109 @@
+{
+  "project_name": "theFRIEND app",
+  "theme": "light",
+  "archetype": "6 (Vibrant Play)",
+  "design_philosophy": "A safe, emotionally supportive, and highly engaging app designed for kids. Soft edges, bright but gentle colors, and bouncy interactions to foster emotional resilience and habit building without pressure. It must feel like a safe haven.",
+  "colors": {
+    "background": "#FFFDF5",
+    "foreground": "#2B2D42",
+    "primary": "#FFD166",
+    "primary_foreground": "#2B2D42",
+    "secondary": "#118AB2",
+    "secondary_foreground": "#FFFFFF",
+    "accent": "#F78C6B",
+    "accent_foreground": "#FFFFFF",
+    "success": "#06D6A0",
+    "success_foreground": "#FFFFFF",
+    "muted": "#F0F7FF",
+    "muted_foreground": "#6C757D",
+    "card": "#FFFFFF",
+    "border": "#E2E8F0"
+  },
+  "typography": {
+    "headings": {
+      "font_family": "Fredoka, sans-serif",
+      "weights": ["600", "700"],
+      "styling": "tracking-normal to tracking-tight, joyful and bouncy"
+    },
+    "body": {
+      "font_family": "Nunito, sans-serif",
+      "weights": ["400", "600", "700", "800"],
+      "styling": "leading-relaxed"
+    },
+    "hierarchy": {
+      "h1": "text-4xl sm:text-5xl font-bold tracking-tight",
+      "h2": "text-2xl sm:text-3xl font-bold",
+      "h3": "text-xl sm:text-2xl font-semibold",
+      "body": "text-base sm:text-lg",
+      "labels": "text-sm font-bold tracking-widest uppercase"
+    }
+  },
+  "layout_and_spacing": {
+    "strategy": "Mobile-first, single-focus hubs. Keep cognitive load extremely low by presenting one main action per screen where possible.",
+    "container": "max-w-md mx-auto min-h-screen bg-[#FFFDF5] relative overflow-x-hidden",
+    "spacing_scale": "Use p-6 or p-8 for card interiors. Large gaps (gap-6 or gap-8) between main sections to provide breathing room.",
+    "border_radius": "Extremely rounded. Use rounded-3xl or rounded-[2rem] for main containers, rounded-full for buttons."
+  },
+  "surface_strategies": {
+    "cards": "White background, rounded-3xl, shadow-[0_8px_30px_rgb(0,0,0,0.04)], with a subtle 2px bottom border (border-b-2 border-slate-100) to give a tactile 'block' feel.",
+    "buttons": "Pill-shaped (rounded-full). Primary buttons should be highly saturated (Yellow or Blue) with a bouncy hover/tap effect.",
+    "inputs": "Large, deeply rounded (rounded-2xl), bg-slate-50, border-none, ring-2 ring-transparent focus:ring-secondary. Use playful placeholder text."
+  },
+  "components": {
+    "navigation": "Bottom tab bar for mobile web app, or top sticky header with the fluffy mascot and streak counter visible at all times.",
+    "streak_dashboard": "Centerpiece of gamification. Use the streak_badge image. Display 'fire' or 'stars' to indicate current streak. Emphasize recovery/freeze over punishing loss.",
+    "mood_checkin": "Use large emojis or custom animated SVG faces for kids to tap how they feel. Big touch targets.",
+    "modals": "Slide up from bottom (Sheet pattern) or bouncy center scale-in. Overlay must be backdrop-blur-sm bg-slate-900/20.",
+    "icons": "Use lucide-react with strokeWidth={3} to make them look like thick marker drawings."
+  },
+  "motion_and_interactions": {
+    "hover_states": "Buttons lift slightly (-translate-y-1) and gain shadow.",
+    "tap_states": "Buttons squash down (active:scale-95) for tactile feedback.",
+    "page_transitions": "Framer motion: fadeIn and slideUp (y: 20 -> 0) with spring physics (stiffness: 300, damping: 20).",
+    "celebrations": "Use confetti (react-confetti) or bouncy success modals when completing a daily check-in or good deed."
+  },
+  "accessibility": {
+    "contrast": "Ensure #2B2D42 text is used over #FFD166 and #FFFDF5. Ensure white text is used over #118AB2.",
+    "testing_ids": "All interactive elements MUST have data-testid attributes (e.g., data-testid='mood-selector-happy', data-testid='submit-good-deed').",
+    "focus": "focus-visible:ring-4 focus-visible:ring-[#118AB2]/50 outline-none"
+  },
+  "media_and_assets": {
+    "instructions_to_main_agent": "Use EXACTLY these images. Do NOT use placeholder text or dummy image URLs.",
+    "images": [
+      {
+        "category": "mascot",
+        "slug_name": "app_mascot",
+        "url": "https://static.prod-images.emergentagent.com/jobs/bb226fb4-4779-4934-af23-4313df1205b3/images/a7e6c1ecac09cc5261306e2177d71a467786b7530823b768a025b5aa543e89ba.png",
+        "description": "Fluffy pastel mascot. Place in the header, onboarding screens, and supportive messages.",
+        "alt_text": "The FRIEND Mascot"
+      },
+      {
+        "category": "gamification",
+        "slug_name": "streak_badge",
+        "url": "https://static.prod-images.emergentagent.com/jobs/bb226fb4-4779-4934-af23-4313df1205b3/images/4478c691c14f8311db5d44bb6372ed09849671be4ac968fc1616f184a6647028.png",
+        "description": "3D fire flame badge. Use in the Streak Dashboard and top nav counter.",
+        "alt_text": "Streak Flame"
+      },
+      {
+        "category": "supportive_content",
+        "slug_name": "motivational_meme",
+        "url": "https://static.prod-images.emergentagent.com/jobs/bb226fb4-4779-4934-af23-4313df1205b3/images/20e048668d5d9dbf26765ed57e33180b76dc56b52dac829cce5b065a5257e5df.png",
+        "description": "Happy cat giving thumbs up. Use as a placeholder for the daily 'fun memes/pics' feature to cheer up the user.",
+        "alt_text": "Happy motivational meme"
+      },
+      {
+        "category": "rewards",
+        "slug_name": "good_deed_icon",
+        "url": "https://static.prod-images.emergentagent.com/jobs/bb226fb4-4779-4934-af23-4313df1205b3/images/598c2fc244c235ebbdc654568179842693dd702c40ae76754656dbda06f19fd0.png",
+        "description": "Floating star with ribbon. Use for the 'Do 1 good thing' activity list completion state.",
+        "alt_text": "Good Deed Star"
+      }
+    ]
+  },
+  "dependencies": [
+    "framer-motion",
+    "lucide-react",
+    "react-confetti"
+  ],
+  "font_installation": "Add Google Fonts <link href=\"https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@400;600;700;800&display=swap\" rel=\"stylesheet\"> to public/index.html"
+}
