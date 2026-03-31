@@ -3,12 +3,12 @@ import "@/App.css";
 import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
 import Confetti from "react-confetti";
+import { LanguageProvider, useLanguage } from "./LanguageContext";
 import { 
   Home, 
   Heart, 
   Sparkles, 
   User, 
-  Flame, 
   Check, 
   ChevronRight,
   Star,
@@ -17,7 +17,9 @@ import {
   Frown,
   AlertCircle,
   Image as ImageIcon,
-  Award
+  Award,
+  Globe,
+  ChevronDown
 } from "lucide-react";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -38,25 +40,71 @@ const CLOTHES_COLORS = ["#FFD166", "#118AB2", "#F78C6B", "#06D6A0", "#9B59B6", "
 
 // Mood emojis with scores
 const MOOD_OPTIONS = [
-  { emoji: "😢", label: "Very Sad", score: 1 },
-  { emoji: "😕", label: "A bit down", score: 2 },
-  { emoji: "😐", label: "Okay", score: 3 },
-  { emoji: "😊", label: "Good", score: 4 },
-  { emoji: "😄", label: "Amazing!", score: 5 }
+  { emoji: "😢", score: 1 },
+  { emoji: "😕", score: 2 },
+  { emoji: "😐", score: 3 },
+  { emoji: "😊", score: 4 },
+  { emoji: "😄", score: 5 }
 ];
+
+// Language Selector Component
+const LanguageSelector = () => {
+  const { language, setLanguage, languages, languageNames } = useLanguage();
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div className="relative" data-testid="language-selector">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center gap-2 px-3 py-2 rounded-full bg-white border-2 border-[#E2E8F0] hover:border-[#118AB2] transition-all"
+        data-testid="language-selector-btn"
+      >
+        <Globe className="w-4 h-4 text-[#118AB2]" strokeWidth={3} />
+        <span className="text-sm font-semibold text-[#2B2D42]">{languageNames[language]}</span>
+        <ChevronDown className={`w-4 h-4 text-[#6C757D] transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+      </button>
+      
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="absolute top-full right-0 mt-2 bg-white rounded-2xl shadow-lg border border-[#E2E8F0] overflow-hidden z-50"
+          >
+            {languages.map((lang) => (
+              <button
+                key={lang}
+                onClick={() => { setLanguage(lang); setIsOpen(false); }}
+                className={`w-full px-4 py-3 text-left hover:bg-[#F0F7FF] transition-colors flex items-center gap-2 ${language === lang ? 'bg-[#F0F7FF]' : ''}`}
+                data-testid={`language-option-${lang}`}
+              >
+                {language === lang && <Check className="w-4 h-4 text-[#06D6A0]" strokeWidth={3} />}
+                <span className={`text-sm font-semibold ${language === lang ? 'text-[#118AB2]' : 'text-[#2B2D42]'}`}>
+                  {languageNames[lang]}
+                </span>
+              </button>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
 
 // Registration Screen
 const RegistrationScreen = ({ onRegister }) => {
+  const { t } = useLanguage();
   const [form, setForm] = useState({ name: "", age: "", gender: "", email: "" });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
   const validate = () => {
     const newErrors = {};
-    if (!form.name.trim()) newErrors.name = "Please enter your name";
-    if (!form.age || form.age < 5 || form.age > 18) newErrors.age = "Age should be between 5-18";
-    if (!form.gender) newErrors.gender = "Please select your gender";
-    if (!form.email.includes("@")) newErrors.email = "Please enter a valid email";
+    if (!form.name.trim()) newErrors.name = true;
+    if (!form.age || form.age < 5 || form.age > 18) newErrors.age = true;
+    if (!form.gender) newErrors.gender = true;
+    if (!form.email.includes("@")) newErrors.email = true;
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -75,16 +123,15 @@ const RegistrationScreen = ({ onRegister }) => {
       onRegister(response.data);
     } catch (error) {
       if (error.response?.data?.detail === "Email already registered") {
-        // Try to get existing user
         try {
           const existingUser = await axios.get(`${API}/users/email/${form.email}`);
           localStorage.setItem("userId", existingUser.data.id);
           onRegister(existingUser.data);
         } catch {
-          setErrors({ email: "Something went wrong. Please try again." });
+          setErrors({ email: true });
         }
       } else {
-        setErrors({ email: error.response?.data?.detail || "Something went wrong" });
+        setErrors({ email: true });
       }
     }
     setLoading(false);
@@ -96,6 +143,11 @@ const RegistrationScreen = ({ onRegister }) => {
       animate={{ opacity: 1, y: 0 }}
       className="min-h-screen bg-[#FFFDF5] p-6 flex flex-col items-center"
     >
+      {/* Language Selector at top */}
+      <div className="w-full max-w-sm flex justify-end mb-4">
+        <LanguageSelector />
+      </div>
+
       <motion.img 
         src={ASSETS.mascot} 
         alt="FRIEND Mascot"
@@ -105,64 +157,60 @@ const RegistrationScreen = ({ onRegister }) => {
       />
       
       <h1 className="text-3xl font-bold text-[#2B2D42] mb-2" style={{ fontFamily: 'Fredoka, sans-serif' }}>
-        Welcome to theFRIEND!
+        {t('welcome')}
       </h1>
       <p className="text-[#6C757D] mb-8 text-center">
-        Let's get to know each other!
+        {t('letsGetToKnow')}
       </p>
 
       <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-4">
         <div>
           <input
             type="text"
-            placeholder="What's your name?"
-            className="input-field"
+            placeholder={t('whatsYourName')}
+            className={`input-field ${errors.name ? 'ring-2 ring-[#F78C6B]' : ''}`}
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
             data-testid="registration-name-input"
           />
-          {errors.name && <p className="text-[#F78C6B] text-sm mt-1">{errors.name}</p>}
         </div>
 
         <div>
           <input
             type="number"
-            placeholder="How old are you?"
-            className="input-field"
+            placeholder={t('howOldAreYou')}
+            className={`input-field ${errors.age ? 'ring-2 ring-[#F78C6B]' : ''}`}
             value={form.age}
             onChange={(e) => setForm({ ...form, age: e.target.value })}
             data-testid="registration-age-input"
           />
-          {errors.age && <p className="text-[#F78C6B] text-sm mt-1">{errors.age}</p>}
         </div>
 
         <div>
           <div className="flex gap-3">
-            {["Boy", "Girl", "Other"].map((g) => (
+            {[{ key: "boy", label: t('boy') }, { key: "girl", label: t('girl') }, { key: "other", label: t('other') }].map((g) => (
               <button
-                key={g}
+                key={g.key}
                 type="button"
-                className={`toggle-btn flex-1 ${form.gender === g.toLowerCase() ? "yes" : ""}`}
-                onClick={() => setForm({ ...form, gender: g.toLowerCase() })}
-                data-testid={`registration-gender-${g.toLowerCase()}`}
+                className={`toggle-btn flex-1 ${form.gender === g.key ? "yes" : ""}`}
+                onClick={() => setForm({ ...form, gender: g.key })}
+                data-testid={`registration-gender-${g.key}`}
               >
-                {g}
+                {g.label}
               </button>
             ))}
           </div>
-          {errors.gender && <p className="text-[#F78C6B] text-sm mt-1">{errors.gender}</p>}
         </div>
 
         <div>
           <input
             type="email"
-            placeholder="Parent's email"
-            className="input-field"
+            placeholder={t('parentsEmail')}
+            className={`input-field ${errors.email ? 'ring-2 ring-[#F78C6B]' : ''}`}
             value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
             data-testid="registration-email-input"
           />
-          {errors.email && <p className="text-[#F78C6B] text-sm mt-1">{errors.email}</p>}
         </div>
 
         <button 
@@ -171,7 +219,7 @@ const RegistrationScreen = ({ onRegister }) => {
           disabled={loading}
           data-testid="registration-submit-btn"
         >
-          {loading ? "Loading..." : "Let's Go!"}
+          {loading ? t('loading') : t('letsGo')}
         </button>
       </form>
     </motion.div>
@@ -179,7 +227,8 @@ const RegistrationScreen = ({ onRegister }) => {
 };
 
 // Home Dashboard
-const HomeDashboard = ({ user, onCheckIn, todayCheckin, supportiveMessage, refreshUser }) => {
+const HomeDashboard = ({ user, onCheckIn, todayCheckin, refreshUser }) => {
+  const { t, language } = useLanguage();
   const [showCheckin, setShowCheckin] = useState(false);
   const [moodSelected, setMoodSelected] = useState(null);
   const [isBothered, setIsBothered] = useState(null);
@@ -187,6 +236,15 @@ const HomeDashboard = ({ user, onCheckIn, todayCheckin, supportiveMessage, refre
   const [step, setStep] = useState(0);
   const [showConfetti, setShowConfetti] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  // Get random supportive message based on language
+  const getRandomMessage = () => {
+    const msgKeys = ['msg1', 'msg2', 'msg3', 'msg4', 'msg5', 'msg6', 'msg7', 'msg8', 'msg9', 'msg10'];
+    const randomKey = msgKeys[Math.floor(Math.random() * msgKeys.length)];
+    return t(randomKey);
+  };
+
+  const [supportiveMessage] = useState(getRandomMessage);
 
   const handleMoodSelect = (mood) => {
     setMoodSelected(mood);
@@ -209,6 +267,10 @@ const HomeDashboard = ({ user, onCheckIn, todayCheckin, supportiveMessage, refre
       setTimeout(() => {
         setShowConfetti(false);
         setShowCheckin(false);
+        setStep(0);
+        setMoodSelected(null);
+        setIsBothered(null);
+        setIsSad(null);
         onCheckIn();
         refreshUser();
       }, 3000);
@@ -222,17 +284,20 @@ const HomeDashboard = ({ user, onCheckIn, todayCheckin, supportiveMessage, refre
     <div className="p-6 pb-24">
       {showConfetti && <Confetti recycle={false} numberOfPieces={200} />}
       
-      {/* Header */}
+      {/* Header with Language Selector */}
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-[#2B2D42]" style={{ fontFamily: 'Fredoka, sans-serif' }}>
-            Hi, {user.name}!
+            {t('hi')}, {user.name}!
           </h1>
-          <p className="text-[#6C757D]">How are you today?</p>
+          <p className="text-[#6C757D]">{t('howAreYouToday')}</p>
         </div>
-        <div className="streak-badge" data-testid="streak-badge">
-          <img src={ASSETS.streakBadge} alt="Streak" className="w-6 h-6" />
-          <span>{user.current_streak}</span>
+        <div className="flex items-center gap-3">
+          <LanguageSelector />
+          <div className="streak-badge" data-testid="streak-badge">
+            <img src={ASSETS.streakBadge} alt="Streak" className="w-6 h-6" />
+            <span>{user.current_streak}</span>
+          </div>
         </div>
       </div>
 
@@ -250,9 +315,9 @@ const HomeDashboard = ({ user, onCheckIn, todayCheckin, supportiveMessage, refre
             </div>
             <div className="flex-1">
               <h3 className="font-bold text-[#2B2D42]" style={{ fontFamily: 'Fredoka, sans-serif' }}>
-                Daily Check-in
+                {t('dailyCheckin')}
               </h3>
-              <p className="text-[#6C757D] text-sm">Tell me how you're feeling!</p>
+              <p className="text-[#6C757D] text-sm">{t('tellMeHowYouFeel')}</p>
             </div>
             <ChevronRight className="text-[#6C757D]" />
           </div>
@@ -269,9 +334,9 @@ const HomeDashboard = ({ user, onCheckIn, todayCheckin, supportiveMessage, refre
             </div>
             <div>
               <h3 className="font-bold text-[#2B2D42]" style={{ fontFamily: 'Fredoka, sans-serif' }}>
-                Already Checked In! {todayCheckin.checkin?.mood_emoji}
+                {t('alreadyCheckedIn')} {todayCheckin.checkin?.mood_emoji}
               </h3>
-              <p className="text-[#6C757D] text-sm">Come back tomorrow!</p>
+              <p className="text-[#6C757D] text-sm">{t('comeBackTomorrow')}</p>
             </div>
           </div>
         </motion.div>
@@ -288,7 +353,7 @@ const HomeDashboard = ({ user, onCheckIn, todayCheckin, supportiveMessage, refre
           <img src={ASSETS.mascot} alt="Mascot" className="w-12 h-12" />
           <div>
             <p className="text-[#2B2D42] font-semibold leading-relaxed">
-              {supportiveMessage?.text || "You are amazing just the way you are! ✨"}
+              {supportiveMessage}
             </p>
           </div>
         </div>
@@ -304,14 +369,14 @@ const HomeDashboard = ({ user, onCheckIn, todayCheckin, supportiveMessage, refre
       >
         <h3 className="font-bold text-[#2B2D42] mb-3" style={{ fontFamily: 'Fredoka, sans-serif' }}>
           <ImageIcon className="inline w-5 h-5 mr-2" strokeWidth={3} />
-          Daily Smile
+          {t('dailySmile')}
         </h3>
         <img 
           src={ASSETS.meme} 
           alt="Fun meme" 
           className="w-full rounded-2xl"
         />
-        <p className="text-center text-[#6C757D] mt-3 text-sm">Your memes will appear here!</p>
+        <p className="text-center text-[#6C757D] mt-3 text-sm">{t('yourMemesHere')}</p>
       </motion.div>
 
       {/* Check-in Modal */}
@@ -335,7 +400,7 @@ const HomeDashboard = ({ user, onCheckIn, todayCheckin, supportiveMessage, refre
               {step === 0 && (
                 <>
                   <h2 className="text-2xl font-bold text-center text-[#2B2D42] mb-6" style={{ fontFamily: 'Fredoka, sans-serif' }}>
-                    How are you feeling today?
+                    {t('howAreYouFeeling')}
                   </h2>
                   <div className="flex justify-center gap-3 flex-wrap">
                     {MOOD_OPTIONS.map((mood) => (
@@ -351,8 +416,8 @@ const HomeDashboard = ({ user, onCheckIn, todayCheckin, supportiveMessage, refre
                     ))}
                   </div>
                   <div className="flex justify-center gap-8 mt-4 text-sm text-[#6C757D]">
-                    <span>Very Sad</span>
-                    <span>Amazing!</span>
+                    <span>{t('verySad')}</span>
+                    <span>{t('amazing')}</span>
                   </div>
                 </>
               )}
@@ -360,7 +425,7 @@ const HomeDashboard = ({ user, onCheckIn, todayCheckin, supportiveMessage, refre
               {step === 1 && (
                 <>
                   <h2 className="text-2xl font-bold text-center text-[#2B2D42] mb-6" style={{ fontFamily: 'Fredoka, sans-serif' }}>
-                    Is anyone bothering you at school?
+                    {t('isAnyoneBothering')}
                   </h2>
                   <div className="flex justify-center gap-4">
                     <button 
@@ -368,14 +433,14 @@ const HomeDashboard = ({ user, onCheckIn, todayCheckin, supportiveMessage, refre
                       onClick={() => { setIsBothered(true); setStep(2); }}
                       data-testid="bothered-yes-btn"
                     >
-                      Yes 😔
+                      {t('yes')} 😔
                     </button>
                     <button 
                       className={`toggle-btn ${isBothered === false ? "no" : ""}`}
                       onClick={() => { setIsBothered(false); setStep(2); }}
                       data-testid="bothered-no-btn"
                     >
-                      No 😊
+                      {t('no')} 😊
                     </button>
                   </div>
                 </>
@@ -384,7 +449,7 @@ const HomeDashboard = ({ user, onCheckIn, todayCheckin, supportiveMessage, refre
               {step === 2 && (
                 <>
                   <h2 className="text-2xl font-bold text-center text-[#2B2D42] mb-6" style={{ fontFamily: 'Fredoka, sans-serif' }}>
-                    Did you feel sad today?
+                    {t('didYouFeelSad')}
                   </h2>
                   <div className="flex justify-center gap-4 mb-6">
                     <button 
@@ -392,14 +457,14 @@ const HomeDashboard = ({ user, onCheckIn, todayCheckin, supportiveMessage, refre
                       onClick={() => setIsSad(true)}
                       data-testid="sad-yes-btn"
                     >
-                      Yes 😢
+                      {t('yes')} 😢
                     </button>
                     <button 
                       className={`toggle-btn ${isSad === false ? "no" : ""}`}
                       onClick={() => setIsSad(false)}
                       data-testid="sad-no-btn"
                     >
-                      No 😄
+                      {t('no')} 😄
                     </button>
                   </div>
                   {isSad !== null && (
@@ -411,7 +476,7 @@ const HomeDashboard = ({ user, onCheckIn, todayCheckin, supportiveMessage, refre
                       disabled={loading}
                       data-testid="submit-checkin-btn"
                     >
-                      {loading ? "Saving..." : "Done! 🎉"}
+                      {loading ? t('saving') : `${t('done')} 🎉`}
                     </motion.button>
                   )}
                 </>
@@ -425,9 +490,24 @@ const HomeDashboard = ({ user, onCheckIn, todayCheckin, supportiveMessage, refre
 };
 
 // Good Deeds Screen
-const GoodDeedsScreen = ({ user, deeds, completedDeeds, onCompleteDeed }) => {
+const GoodDeedsScreen = ({ user, completedDeeds, onCompleteDeed }) => {
+  const { t } = useLanguage();
   const [showCelebration, setShowCelebration] = useState(false);
   const [celebratedDeed, setCelebratedDeed] = useState(null);
+
+  // Translated deeds
+  const deeds = [
+    { id: "1", title: t('deed1Title'), description: t('deed1Desc'), points: 10 },
+    { id: "2", title: t('deed2Title'), description: t('deed2Desc'), points: 15 },
+    { id: "3", title: t('deed3Title'), description: t('deed3Desc'), points: 10 },
+    { id: "4", title: t('deed4Title'), description: t('deed4Desc'), points: 15 },
+    { id: "5", title: t('deed5Title'), description: t('deed5Desc'), points: 20 },
+    { id: "6", title: t('deed6Title'), description: t('deed6Desc'), points: 10 },
+    { id: "7", title: t('deed7Title'), description: t('deed7Desc'), points: 15 },
+    { id: "8", title: t('deed8Title'), description: t('deed8Desc'), points: 15 },
+    { id: "9", title: t('deed9Title'), description: t('deed9Desc'), points: 20 },
+    { id: "10", title: t('deed10Title'), description: t('deed10Desc'), points: 15 },
+  ];
 
   const isCompleted = (deedId) => {
     const today = new Date().toISOString().split("T")[0];
@@ -457,14 +537,18 @@ const GoodDeedsScreen = ({ user, deeds, completedDeeds, onCompleteDeed }) => {
     <div className="p-6 pb-24">
       {showCelebration && <Confetti recycle={false} numberOfPieces={150} />}
       
-      <div className="flex items-center gap-4 mb-6">
-        <img src={ASSETS.goodDeedStar} alt="Star" className="w-12 h-12" />
-        <div>
-          <h1 className="text-2xl font-bold text-[#2B2D42]" style={{ fontFamily: 'Fredoka, sans-serif' }}>
-            Do Good Things!
-          </h1>
-          <p className="text-[#6C757D]">Pick one to brighten someone's day</p>
+      {/* Header with Language Selector */}
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-4">
+          <img src={ASSETS.goodDeedStar} alt="Star" className="w-12 h-12" />
+          <div>
+            <h1 className="text-2xl font-bold text-[#2B2D42]" style={{ fontFamily: 'Fredoka, sans-serif' }}>
+              {t('doGoodThings')}
+            </h1>
+            <p className="text-[#6C757D]">{t('pickOneToBrighten')}</p>
+          </div>
         </div>
+        <LanguageSelector />
       </div>
 
       <div className="space-y-3">
@@ -523,12 +607,12 @@ const GoodDeedsScreen = ({ user, deeds, completedDeeds, onCompleteDeed }) => {
                 transition={{ duration: 0.5, repeat: 2 }}
               />
               <h2 className="text-2xl font-bold text-[#2B2D42] mb-2" style={{ fontFamily: 'Fredoka, sans-serif' }}>
-                Amazing! 🎉
+                {t('amazingCelebration')} 🎉
               </h2>
               <p className="text-[#6C757D]">
-                You completed: {celebratedDeed.title}
+                {t('youCompleted')} {celebratedDeed.title}
               </p>
-              <p className="text-[#FFD166] font-bold mt-2">+{celebratedDeed.points} points!</p>
+              <p className="text-[#FFD166] font-bold mt-2">+{celebratedDeed.points} {t('points')}</p>
             </motion.div>
           </motion.div>
         )}
@@ -539,6 +623,7 @@ const GoodDeedsScreen = ({ user, deeds, completedDeeds, onCompleteDeed }) => {
 
 // Profile & Avatar Screen
 const ProfileScreen = ({ user, onUpdateAvatar }) => {
+  const { t } = useLanguage();
   const [avatarFace, setAvatarFace] = useState(user.avatar_face || 0);
   const [avatarHair, setAvatarHair] = useState(user.avatar_hair || 0);
   const [avatarClothes, setAvatarClothes] = useState(user.avatar_clothes || 0);
@@ -561,10 +646,14 @@ const ProfileScreen = ({ user, onUpdateAvatar }) => {
 
   return (
     <div className="p-6 pb-24">
-      <h1 className="text-2xl font-bold text-[#2B2D42] mb-6" style={{ fontFamily: 'Fredoka, sans-serif' }}>
-        <User className="inline w-6 h-6 mr-2" strokeWidth={3} />
-        Your Profile
-      </h1>
+      {/* Header with Language Selector */}
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-2xl font-bold text-[#2B2D42]" style={{ fontFamily: 'Fredoka, sans-serif' }}>
+          <User className="inline w-6 h-6 mr-2" strokeWidth={3} />
+          {t('yourProfile')}
+        </h1>
+        <LanguageSelector />
+      </div>
 
       {/* Avatar Preview */}
       <motion.div 
@@ -585,13 +674,13 @@ const ProfileScreen = ({ user, onUpdateAvatar }) => {
         <h2 className="text-xl font-bold text-[#2B2D42]" style={{ fontFamily: 'Fredoka, sans-serif' }}>
           {user.name}
         </h2>
-        <p className="text-[#6C757D]">{user.age} years old</p>
+        <p className="text-[#6C757D]">{user.age} {t('yearsOld')}</p>
       </motion.div>
 
       {/* Face Selection */}
       <div className="card mb-4">
         <h3 className="font-bold text-[#2B2D42] mb-3" style={{ fontFamily: 'Fredoka, sans-serif' }}>
-          Pick Your Face
+          {t('pickYourFace')}
         </h3>
         <div className="flex gap-2 flex-wrap">
           {FACES.map((face, i) => (
@@ -610,7 +699,7 @@ const ProfileScreen = ({ user, onUpdateAvatar }) => {
       {/* Hair Color Selection */}
       <div className="card mb-4">
         <h3 className="font-bold text-[#2B2D42] mb-3" style={{ fontFamily: 'Fredoka, sans-serif' }}>
-          Pick Hair Color
+          {t('pickHairColor')}
         </h3>
         <div className="flex gap-2 flex-wrap">
           {HAIR_COLORS.map((color, i) => (
@@ -628,7 +717,7 @@ const ProfileScreen = ({ user, onUpdateAvatar }) => {
       {/* Clothes Color Selection */}
       <div className="card mb-6">
         <h3 className="font-bold text-[#2B2D42] mb-3" style={{ fontFamily: 'Fredoka, sans-serif' }}>
-          Pick Clothes Color
+          {t('pickClothesColor')}
         </h3>
         <div className="flex gap-2 flex-wrap">
           {CLOTHES_COLORS.map((color, i) => (
@@ -647,20 +736,20 @@ const ProfileScreen = ({ user, onUpdateAvatar }) => {
       <div className="card mb-6">
         <h3 className="font-bold text-[#2B2D42] mb-4" style={{ fontFamily: 'Fredoka, sans-serif' }}>
           <Award className="inline w-5 h-5 mr-2" strokeWidth={3} />
-          Your Stats
+          {t('yourStats')}
         </h3>
         <div className="grid grid-cols-3 gap-4 text-center">
           <div>
             <div className="text-2xl font-bold text-[#FFD166]">{user.current_streak}</div>
-            <div className="text-xs text-[#6C757D]">Current Streak</div>
+            <div className="text-xs text-[#6C757D]">{t('currentStreak')}</div>
           </div>
           <div>
             <div className="text-2xl font-bold text-[#118AB2]">{user.longest_streak}</div>
-            <div className="text-xs text-[#6C757D]">Longest Streak</div>
+            <div className="text-xs text-[#6C757D]">{t('longestStreak')}</div>
           </div>
           <div>
             <div className="text-2xl font-bold text-[#06D6A0]">{user.total_checkins}</div>
-            <div className="text-xs text-[#6C757D]">Total Check-ins</div>
+            <div className="text-xs text-[#6C757D]">{t('totalCheckins')}</div>
           </div>
         </div>
       </div>
@@ -671,7 +760,7 @@ const ProfileScreen = ({ user, onUpdateAvatar }) => {
         disabled={saving}
         data-testid="save-avatar-btn"
       >
-        {saving ? "Saving..." : "Save Changes"}
+        {saving ? t('loading') : t('saveChanges')}
       </button>
     </div>
   );
@@ -679,6 +768,8 @@ const ProfileScreen = ({ user, onUpdateAvatar }) => {
 
 // Analysis Screen
 const AnalysisScreen = ({ user, analysis, checkins }) => {
+  const { t } = useLanguage();
+  
   const getTrendIcon = () => {
     switch (analysis?.trend) {
       case "improving": return <Smile className="w-6 h-6 text-[#06D6A0]" strokeWidth={3} />;
@@ -689,18 +780,22 @@ const AnalysisScreen = ({ user, analysis, checkins }) => {
 
   const getTrendLabel = () => {
     switch (analysis?.trend) {
-      case "improving": return "Getting Better!";
-      case "needs_attention": return "Could Use a Hug";
-      default: return "Doing Okay";
+      case "improving": return t('gettingBetter');
+      case "needs_attention": return t('couldUseHug');
+      default: return t('doingOkay');
     }
   };
 
   return (
     <div className="p-6 pb-24">
-      <h1 className="text-2xl font-bold text-[#2B2D42] mb-6" style={{ fontFamily: 'Fredoka, sans-serif' }}>
-        <Sparkles className="inline w-6 h-6 mr-2" strokeWidth={3} />
-        How You're Doing
-      </h1>
+      {/* Header with Language Selector */}
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-2xl font-bold text-[#2B2D42]" style={{ fontFamily: 'Fredoka, sans-serif' }}>
+          <Sparkles className="inline w-6 h-6 mr-2" strokeWidth={3} />
+          {t('howYoureDoing')}
+        </h1>
+        <LanguageSelector />
+      </div>
 
       {/* Overall Score */}
       <motion.div 
@@ -718,7 +813,7 @@ const AnalysisScreen = ({ user, analysis, checkins }) => {
           {analysis?.overall_score || 0}/5
         </div>
         <p className="text-[#6C757D] text-sm">
-          {analysis?.positive_days || 0} out of {analysis?.total_days || 0} days were great!
+          {analysis?.positive_days || 0} {t('outOf')} {analysis?.total_days || 0} {t('daysWereGreat')}
         </p>
       </motion.div>
 
@@ -733,10 +828,10 @@ const AnalysisScreen = ({ user, analysis, checkins }) => {
             <AlertCircle className="w-6 h-6 text-[#F78C6B] flex-shrink-0" strokeWidth={3} />
             <div>
               <h3 className="font-bold text-[#2B2D42] mb-2" style={{ fontFamily: 'Fredoka, sans-serif' }}>
-                Friendly Reminder
+                {t('friendlyReminder')}
               </h3>
               <p className="text-[#6C757D] text-sm">
-                It looks like you've been feeling down lately. Remember, it's okay to talk to a trusted adult about how you feel!
+                {t('reminderText')}
               </p>
             </div>
           </div>
@@ -746,7 +841,7 @@ const AnalysisScreen = ({ user, analysis, checkins }) => {
       {/* Recent Check-ins */}
       <div className="card">
         <h3 className="font-bold text-[#2B2D42] mb-4" style={{ fontFamily: 'Fredoka, sans-serif' }}>
-          Recent Feelings
+          {t('recentFeelings')}
         </h3>
         <div className="space-y-3">
           {checkins?.slice(0, 7).map((checkin, i) => (
@@ -767,7 +862,7 @@ const AnalysisScreen = ({ user, analysis, checkins }) => {
           ))}
           {(!checkins || checkins.length === 0) && (
             <p className="text-center text-[#6C757D] py-4">
-              No check-ins yet. Start today!
+              {t('noCheckinsYet')}
             </p>
           )}
         </div>
@@ -778,15 +873,17 @@ const AnalysisScreen = ({ user, analysis, checkins }) => {
 
 // Bottom Navigation
 const BottomNav = ({ activeTab, setActiveTab }) => {
+  const { t } = useLanguage();
+  
   const tabs = [
-    { id: "home", icon: Home, label: "Home" },
-    { id: "deeds", icon: Sparkles, label: "Good Deeds" },
-    { id: "analysis", icon: Heart, label: "Feelings" },
-    { id: "profile", icon: User, label: "Me" }
+    { id: "home", icon: Home, label: t('home') },
+    { id: "deeds", icon: Sparkles, label: t('goodDeeds') },
+    { id: "analysis", icon: Heart, label: t('feelings') },
+    { id: "profile", icon: User, label: t('me') }
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E2E8F0] flex" data-testid="bottom-navigation">
+    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E2E8F0] flex max-w-md mx-auto" data-testid="bottom-navigation">
       {tabs.map((tab) => (
         <button
           key={tab.id}
@@ -802,14 +899,12 @@ const BottomNav = ({ activeTab, setActiveTab }) => {
   );
 };
 
-// Main App
-function App() {
+// Main App Content
+function AppContent() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("home");
   const [todayCheckin, setTodayCheckin] = useState(null);
-  const [supportiveMessage, setSupportiveMessage] = useState(null);
-  const [deeds, setDeeds] = useState([]);
   const [completedDeeds, setCompletedDeeds] = useState([]);
   const [analysis, setAnalysis] = useState(null);
   const [checkins, setCheckins] = useState([]);
@@ -831,26 +926,6 @@ function App() {
       setTodayCheckin(response.data);
     } catch (error) {
       console.error("Error fetching today's checkin:", error);
-    }
-  }, []);
-
-  const fetchSupportiveMessage = useCallback(async () => {
-    try {
-      const response = await axios.get(`${API}/content/supportive-messages`);
-      const messages = response.data;
-      const randomMessage = messages[Math.floor(Math.random() * messages.length)];
-      setSupportiveMessage(randomMessage);
-    } catch (error) {
-      console.error("Error fetching messages:", error);
-    }
-  }, []);
-
-  const fetchDeeds = useCallback(async () => {
-    try {
-      const response = await axios.get(`${API}/content/good-deeds`);
-      setDeeds(response.data);
-    } catch (error) {
-      console.error("Error fetching deeds:", error);
     }
   }, []);
 
@@ -889,8 +964,6 @@ function App() {
         if (userData) {
           await Promise.all([
             fetchTodayCheckin(storedUserId),
-            fetchSupportiveMessage(),
-            fetchDeeds(),
             fetchCompletedDeeds(storedUserId),
             fetchAnalysis(storedUserId),
             fetchCheckins(storedUserId)
@@ -900,14 +973,10 @@ function App() {
       setLoading(false);
     };
     init();
-  }, [fetchUser, fetchTodayCheckin, fetchSupportiveMessage, fetchDeeds, fetchCompletedDeeds, fetchAnalysis, fetchCheckins]);
+  }, [fetchUser, fetchTodayCheckin, fetchCompletedDeeds, fetchAnalysis, fetchCheckins]);
 
   const handleRegister = async (userData) => {
     setUser(userData);
-    await Promise.all([
-      fetchSupportiveMessage(),
-      fetchDeeds()
-    ]);
     setTodayCheckin({ checked_in: false });
   };
 
@@ -953,14 +1022,12 @@ function App() {
           user={user}
           onCheckIn={refreshData}
           todayCheckin={todayCheckin}
-          supportiveMessage={supportiveMessage}
           refreshUser={refreshUser}
         />
       )}
       {activeTab === "deeds" && (
         <GoodDeedsScreen 
           user={user}
-          deeds={deeds}
           completedDeeds={completedDeeds}
           onCompleteDeed={refreshData}
         />
@@ -980,6 +1047,15 @@ function App() {
       )}
       <BottomNav activeTab={activeTab} setActiveTab={setActiveTab} />
     </div>
+  );
+}
+
+// Main App with Language Provider
+function App() {
+  return (
+    <LanguageProvider>
+      <AppContent />
+    </LanguageProvider>
   );
 }
 

@@ -75,6 +75,14 @@
 - **Frontend**: React 19, Tailwind CSS, Framer Motion, React Confetti
 - **Database**: MongoDB
 - **Fonts**: Fredoka (headings), Nunito (body)
+- **Languages**: English, Russian (Русский), Kazakh (Қазақша)
+
+## Multi-Language Support (Added Jan 31, 2026)
+- ✅ Language selector in top-right corner of all screens
+- ✅ Full translation of all UI text, buttons, labels
+- ✅ Translated supportive messages
+- ✅ Translated good deeds list
+- ✅ Language preference saved in localStorage
 
 ## Prioritized Backlog
 

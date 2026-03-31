@@ -1,0 +1,330 @@
+// Language translations for theFRIEND app
+
+export const translations = {
+  en: {
+    // Registration
+    welcome: "Welcome to theFRIEND!",
+    letsGetToKnow: "Let's get to know each other!",
+    whatsYourName: "What's your name?",
+    howOldAreYou: "How old are you?",
+    parentsEmail: "Parent's email",
+    boy: "Boy",
+    girl: "Girl",
+    other: "Other",
+    letsGo: "Let's Go!",
+    loading: "Loading...",
+    
+    // Home
+    hi: "Hi",
+    howAreYouToday: "How are you today?",
+    dailyCheckin: "Daily Check-in",
+    tellMeHowYouFeel: "Tell me how you're feeling!",
+    alreadyCheckedIn: "Already Checked In!",
+    comeBackTomorrow: "Come back tomorrow!",
+    dailySmile: "Daily Smile",
+    yourMemesHere: "Your memes will appear here!",
+    
+    // Check-in Modal
+    howAreYouFeeling: "How are you feeling today?",
+    verySad: "Very Sad",
+    amazing: "Amazing!",
+    isAnyoneBothering: "Is anyone bothering you at school?",
+    didYouFeelSad: "Did you feel sad today?",
+    yes: "Yes",
+    no: "No",
+    done: "Done!",
+    saving: "Saving...",
+    
+    // Good Deeds
+    doGoodThings: "Do Good Things!",
+    pickOneToBrighten: "Pick one to brighten someone's day",
+    amazingCelebration: "Amazing!",
+    youCompleted: "You completed:",
+    points: "points!",
+    
+    // Good Deeds List
+    deed1Title: "Say something nice to someone",
+    deed1Desc: "Give a compliment to a friend or family member!",
+    deed2Title: "Help with a chore",
+    deed2Desc: "Help someone with a task without being asked!",
+    deed3Title: "Share your snack",
+    deed3Desc: "Share something yummy with a friend!",
+    deed4Title: "Write a thank you note",
+    deed4Desc: "Say thank you to someone who helped you!",
+    deed5Title: "Include someone new",
+    deed5Desc: "Invite someone to play who looks lonely!",
+    deed6Title: "Pick up litter",
+    deed6Desc: "Help keep your neighborhood clean!",
+    deed7Title: "Draw a picture for someone",
+    deed7Desc: "Make art to brighten someone's day!",
+    deed8Title: "Listen to a friend",
+    deed8Desc: "Be a good listener when someone talks to you!",
+    deed9Title: "Help a younger kid",
+    deed9Desc: "Be a helpful big kid to someone smaller!",
+    deed10Title: "Read to someone",
+    deed10Desc: "Share a story with a sibling or pet!",
+    
+    // Profile
+    yourProfile: "Your Profile",
+    yearsOld: "years old",
+    pickYourFace: "Pick Your Face",
+    pickHairColor: "Pick Hair Color",
+    pickClothesColor: "Pick Clothes Color",
+    yourStats: "Your Stats",
+    currentStreak: "Current Streak",
+    longestStreak: "Longest Streak",
+    totalCheckins: "Total Check-ins",
+    saveChanges: "Save Changes",
+    language: "Language",
+    
+    // Analysis
+    howYoureDoing: "How You're Doing",
+    gettingBetter: "Getting Better!",
+    couldUseHug: "Could Use a Hug",
+    doingOkay: "Doing Okay",
+    outOf: "out of",
+    daysWereGreat: "days were great!",
+    friendlyReminder: "Friendly Reminder",
+    reminderText: "It looks like you've been feeling down lately. Remember, it's okay to talk to a trusted adult about how you feel!",
+    recentFeelings: "Recent Feelings",
+    noCheckinsYet: "No check-ins yet. Start today!",
+    
+    // Navigation
+    home: "Home",
+    goodDeeds: "Good Deeds",
+    feelings: "Feelings",
+    me: "Me",
+    
+    // Supportive Messages
+    msg1: "You are amazing just the way you are! ✨",
+    msg2: "It's okay to feel your feelings. They are valid!",
+    msg3: "You are stronger than you think!",
+    msg4: "Every day is a fresh start. You've got this!",
+    msg5: "You matter and the world is better with you in it!",
+    msg6: "Be kind to yourself today. You deserve it!",
+    msg7: "Your smile can brighten someone's day!",
+    msg8: "Making mistakes is how we learn and grow!",
+    msg9: "You are braver than you believe!",
+    msg10: "Friends come in all shapes and sizes!",
+  },
+  
+  ru: {
+    // Registration
+    welcome: "Добро пожаловать в theFRIEND!",
+    letsGetToKnow: "Давай познакомимся!",
+    whatsYourName: "Как тебя зовут?",
+    howOldAreYou: "Сколько тебе лет?",
+    parentsEmail: "Email родителя",
+    boy: "Мальчик",
+    girl: "Девочка",
+    other: "Другое",
+    letsGo: "Поехали!",
+    loading: "Загрузка...",
+    
+    // Home
+    hi: "Привет",
+    howAreYouToday: "Как ты сегодня?",
+    dailyCheckin: "Ежедневная проверка",
+    tellMeHowYouFeel: "Расскажи, как ты себя чувствуешь!",
+    alreadyCheckedIn: "Уже отметился!",
+    comeBackTomorrow: "Возвращайся завтра!",
+    dailySmile: "Улыбка дня",
+    yourMemesHere: "Твои мемы появятся здесь!",
+    
+    // Check-in Modal
+    howAreYouFeeling: "Как ты себя чувствуешь сегодня?",
+    verySad: "Очень грустно",
+    amazing: "Отлично!",
+    isAnyoneBothering: "Кто-нибудь тебя обижает в школе?",
+    didYouFeelSad: "Тебе было грустно сегодня?",
+    yes: "Да",
+    no: "Нет",
+    done: "Готово!",
+    saving: "Сохраняю...",
+    
+    // Good Deeds
+    doGoodThings: "Делай добрые дела!",
+    pickOneToBrighten: "Выбери одно, чтобы порадовать кого-то",
+    amazingCelebration: "Потрясающе!",
+    youCompleted: "Ты выполнил:",
+    points: "очков!",
+    
+    // Good Deeds List
+    deed1Title: "Скажи что-то приятное кому-то",
+    deed1Desc: "Сделай комплимент другу или члену семьи!",
+    deed2Title: "Помоги по дому",
+    deed2Desc: "Помоги кому-то без просьбы!",
+    deed3Title: "Поделись перекусом",
+    deed3Desc: "Поделись чем-то вкусным с другом!",
+    deed4Title: "Напиши благодарность",
+    deed4Desc: "Скажи спасибо тому, кто тебе помог!",
+    deed5Title: "Пригласи кого-то нового",
+    deed5Desc: "Позови играть того, кто выглядит одиноким!",
+    deed6Title: "Собери мусор",
+    deed6Desc: "Помоги сохранить чистоту вокруг!",
+    deed7Title: "Нарисуй картинку для кого-то",
+    deed7Desc: "Создай искусство, чтобы порадовать кого-то!",
+    deed8Title: "Выслушай друга",
+    deed8Desc: "Будь хорошим слушателем!",
+    deed9Title: "Помоги младшему ребёнку",
+    deed9Desc: "Будь добрым старшим для малышей!",
+    deed10Title: "Почитай кому-нибудь",
+    deed10Desc: "Расскажи историю брату, сестре или питомцу!",
+    
+    // Profile
+    yourProfile: "Твой профиль",
+    yearsOld: "лет",
+    pickYourFace: "Выбери лицо",
+    pickHairColor: "Выбери цвет волос",
+    pickClothesColor: "Выбери цвет одежды",
+    yourStats: "Твоя статистика",
+    currentStreak: "Текущая серия",
+    longestStreak: "Лучшая серия",
+    totalCheckins: "Всего отметок",
+    saveChanges: "Сохранить",
+    language: "Язык",
+    
+    // Analysis
+    howYoureDoing: "Как у тебя дела",
+    gettingBetter: "Становится лучше!",
+    couldUseHug: "Нужны обнимашки",
+    doingOkay: "Всё нормально",
+    outOf: "из",
+    daysWereGreat: "дней были отличными!",
+    friendlyReminder: "Дружеское напоминание",
+    reminderText: "Похоже, тебе было грустно в последнее время. Помни, можно поговорить со взрослым, которому доверяешь!",
+    recentFeelings: "Недавние чувства",
+    noCheckinsYet: "Пока нет отметок. Начни сегодня!",
+    
+    // Navigation
+    home: "Главная",
+    goodDeeds: "Добрые дела",
+    feelings: "Чувства",
+    me: "Я",
+    
+    // Supportive Messages
+    msg1: "Ты замечательный такой, какой есть! ✨",
+    msg2: "Твои чувства важны. Это нормально!",
+    msg3: "Ты сильнее, чем думаешь!",
+    msg4: "Каждый день — это новый старт. У тебя получится!",
+    msg5: "Ты важен, и мир лучше с тобой!",
+    msg6: "Будь добр к себе сегодня. Ты заслуживаешь!",
+    msg7: "Твоя улыбка может осветить чей-то день!",
+    msg8: "Ошибки — это способ учиться и расти!",
+    msg9: "Ты смелее, чем веришь!",
+    msg10: "Друзья бывают разные!",
+  },
+  
+  kk: {
+    // Registration
+    welcome: "theFRIEND-ке қош келдіңіз!",
+    letsGetToKnow: "Танысайық!",
+    whatsYourName: "Сенің атың кім?",
+    howOldAreYou: "Сен нешедесің?",
+    parentsEmail: "Ата-ана email",
+    boy: "Ұл",
+    girl: "Қыз",
+    other: "Басқа",
+    letsGo: "Кеттік!",
+    loading: "Жүктелуде...",
+    
+    // Home
+    hi: "Сәлем",
+    howAreYouToday: "Бүгін қалай жағдайың?",
+    dailyCheckin: "Күнделікті тексеру",
+    tellMeHowYouFeel: "Өзіңді қалай сезінетініңді айт!",
+    alreadyCheckedIn: "Бүгін белгілендің!",
+    comeBackTomorrow: "Ертең қайта кел!",
+    dailySmile: "Күннің күлкісі",
+    yourMemesHere: "Сенің мемдерің осында пайда болады!",
+    
+    // Check-in Modal
+    howAreYouFeeling: "Бүгін өзіңді қалай сезінесің?",
+    verySad: "Өте қайғылы",
+    amazing: "Керемет!",
+    isAnyoneBothering: "Мектепте біреу сені мазалай ма?",
+    didYouFeelSad: "Бүгін қайғылы болдың ба?",
+    yes: "Иә",
+    no: "Жоқ",
+    done: "Дайын!",
+    saving: "Сақталуда...",
+    
+    // Good Deeds
+    doGoodThings: "Жақсы істер жаса!",
+    pickOneToBrighten: "Біреудің күнін жарқын ету үшін біреуін таңда",
+    amazingCelebration: "Тамаша!",
+    youCompleted: "Сен орындадың:",
+    points: "ұпай!",
+    
+    // Good Deeds List
+    deed1Title: "Біреуге жақсы сөз айт",
+    deed1Desc: "Досыңа немесе отбасыңа мақтау айт!",
+    deed2Title: "Үй жұмысына көмектес",
+    deed2Desc: "Сұрамай-ақ біреуге көмектес!",
+    deed3Title: "Тағамыңмен бөліс",
+    deed3Desc: "Досыңмен дәмді нәрсемен бөліс!",
+    deed4Title: "Алғыс жаз",
+    deed4Desc: "Саған көмектескен адамға рахмет айт!",
+    deed5Title: "Жаңа біреуді шақыр",
+    deed5Desc: "Жалғыз көрінетін біреуді ойнауға шақыр!",
+    deed6Title: "Қоқыс жина",
+    deed6Desc: "Айналаңды таза ұстауға көмектес!",
+    deed7Title: "Біреу үшін сурет сал",
+    deed7Desc: "Біреудің күнін жарық ету үшін өнер жаса!",
+    deed8Title: "Досыңды тыңда",
+    deed8Desc: "Біреу сөйлегенде жақсы тыңдаушы бол!",
+    deed9Title: "Кіші балаға көмектес",
+    deed9Desc: "Кішілерге мейірімді аға/апа бол!",
+    deed10Title: "Біреуге оқып бер",
+    deed10Desc: "Бауырыңа немесе үй жануарыңа ертегі оқы!",
+    
+    // Profile
+    yourProfile: "Сенің профиліңdi",
+    yearsOld: "жаста",
+    pickYourFace: "Бетіңді таңда",
+    pickHairColor: "Шаш түсін таңда",
+    pickClothesColor: "Киім түсін таңда",
+    yourStats: "Сенің статистикаң",
+    currentStreak: "Ағымдағы серия",
+    longestStreak: "Ең ұзақ серия",
+    totalCheckins: "Барлық белгілер",
+    saveChanges: "Сақтау",
+    language: "Тіл",
+    
+    // Analysis
+    howYoureDoing: "Сенің жағдайың",
+    gettingBetter: "Жақсарып келеді!",
+    couldUseHug: "Құшақ керек",
+    doingOkay: "Жаман емес",
+    outOf: "ішінен",
+    daysWereGreat: "күн керемет болды!",
+    friendlyReminder: "Достық еске салу",
+    reminderText: "Соңғы уақытта көңіліңіз түскен сияқты. Есіңізде болсын, сенетін үлкендермен сөйлесуге болады!",
+    recentFeelings: "Соңғы сезімдер",
+    noCheckinsYet: "Әлі белгілер жоқ. Бүгін бастаңыз!",
+    
+    // Navigation
+    home: "Басты",
+    goodDeeds: "Жақсылық",
+    feelings: "Сезімдер",
+    me: "Мен",
+    
+    // Supportive Messages
+    msg1: "Сен өзің қалай болсаң, солай керемет! ✨",
+    msg2: "Сезімдерің маңызды. Бұл қалыпты!",
+    msg3: "Сен ойлағанның күштісің!",
+    msg4: "Әр күн жаңа бастама. Сенде бәрі шығады!",
+    msg5: "Сен маңыздысың, әлем сенімен жақсырақ!",
+    msg6: "Бүгін өзіңе мейірімді бол. Сен лайықсың!",
+    msg7: "Сенің күлкің біреудің күнін жарықтандырады!",
+    msg8: "Қателіктер — үйренудің жолы!",
+    msg9: "Сен сенгеннен де батылсың!",
+    msg10: "Достар әр түрлі болады!",
+  }
+};
+
+export const languageNames = {
+  en: "English",
+  ru: "Русский",
+  kk: "Қазақша"
+};
