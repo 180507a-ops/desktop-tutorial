@@ -46,6 +46,19 @@
 
 ## What's Been Implemented (Jan 31, 2026)
 
+### Design Update (Latest)
+- ✅ Custom logo (hand holding heart - blue on pink)
+- ✅ Soft pink and blue color scheme
+- ✅ Skip registration - auto-creates demo user
+- ✅ Human avatar character (not emoji)
+- ✅ Avatar customization: 4 unlocked + 4 locked items per category
+  - Hair colors (8 total, 4 locked)
+  - Face expressions (8 total, 4 locked)
+  - Shirt colors (8 total, 4 locked)
+  - Pants colors (8 total, 4 locked)
+- ✅ Locked items show lock icon + "Earn points to unlock!" hint
+- ✅ Points displayed prominently
+
 ### Backend (FastAPI + MongoDB)
 - ✅ User profile CRUD operations
 - ✅ Mood check-in system with streak tracking
