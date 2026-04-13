@@ -76,6 +76,9 @@ export const translations = {
     totalCheckins: "Total Check-ins",
     saveChanges: "Save Changes",
     language: "Language",
+    pickPantsColor: "Pick Pants Color",
+    lockedItemsHint: "Earn points to unlock more!",
+    points: "points",
     
     // Analysis
     howYoureDoing: "How You're Doing",
@@ -183,6 +186,9 @@ export const translations = {
     totalCheckins: "Всего отметок",
     saveChanges: "Сохранить",
     language: "Язык",
+    pickPantsColor: "Выбери цвет штанов",
+    lockedItemsHint: "Зарабатывай баллы, чтобы открыть больше!",
+    points: "очков",
     
     // Analysis
     howYoureDoing: "Как у тебя дела",
@@ -290,6 +296,9 @@ export const translations = {
     totalCheckins: "Барлық белгілер",
     saveChanges: "Сақтау",
     language: "Тіл",
+    pickPantsColor: "Шалбар түсін таңда",
+    lockedItemsHint: "Көбірек ашу үшін ұпай жина!",
+    points: "ұпай",
     
     // Analysis
     howYoureDoing: "Сенің жағдайың",

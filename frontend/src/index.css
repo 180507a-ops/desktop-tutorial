@@ -3,20 +3,22 @@
 @tailwind utilities;
 
 :root {
-  --background: #FFFDF5;
+  --background: #FFF5F8;
   --foreground: #2B2D42;
-  --primary: #FFD166;
+  --primary: #FFB6C1;
+  --primary-dark: #FF91A4;
   --primary-foreground: #2B2D42;
-  --secondary: #118AB2;
+  --secondary: #87CEEB;
+  --secondary-dark: #5DADE2;
   --secondary-foreground: #FFFFFF;
-  --accent: #F78C6B;
+  --accent: #DDA0DD;
   --accent-foreground: #FFFFFF;
-  --success: #06D6A0;
-  --success-foreground: #FFFFFF;
-  --muted: #F0F7FF;
+  --success: #98D8AA;
+  --success-foreground: #2B2D42;
+  --muted: #F8E8EE;
   --muted-foreground: #6C757D;
   --card: #FFFFFF;
-  --border: #E2E8F0;
+  --border: #F0D4E0;
 }
 
 * {
@@ -65,6 +67,11 @@ code {
   50% { box-shadow: 0 0 20px var(--primary), 0 0 30px var(--primary); }
 }
 
+@keyframes heart-beat {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
 .animate-bounce-in {
   animation: bounce-in 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
@@ -81,9 +88,13 @@ code {
   animation: pulse-glow 2s ease-in-out infinite;
 }
 
+.animate-heart-beat {
+  animation: heart-beat 1.5s ease-in-out infinite;
+}
+
 /* Button styles */
 .btn-primary {
-  background-color: var(--primary);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
   color: var(--primary-foreground);
   border: none;
   padding: 14px 28px;
@@ -93,12 +104,12 @@ code {
   font-size: 1rem;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 14px rgba(255, 209, 102, 0.4);
+  box-shadow: 0 4px 14px rgba(255, 182, 193, 0.4);
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(255, 209, 102, 0.5);
+  box-shadow: 0 6px 20px rgba(255, 182, 193, 0.5);
 }
 
 .btn-primary:active {
@@ -106,7 +117,7 @@ code {
 }
 
 .btn-secondary {
-  background-color: var(--secondary);
+  background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-dark) 100%);
   color: var(--secondary-foreground);
   border: none;
   padding: 14px 28px;
@@ -116,12 +127,12 @@ code {
   font-size: 1rem;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 14px rgba(17, 138, 178, 0.3);
+  box-shadow: 0 4px 14px rgba(135, 206, 235, 0.4);
 }
 
 .btn-secondary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(17, 138, 178, 0.4);
+  box-shadow: 0 6px 20px rgba(135, 206, 235, 0.5);
 }
 
 .btn-secondary:active {
@@ -132,8 +143,8 @@ code {
 .card {
   background-color: var(--card);
   border-radius: 1.5rem;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
-  border-bottom: 2px solid var(--border);
+  box-shadow: 0 8px 30px rgba(255, 182, 193, 0.15);
+  border: 2px solid var(--border);
   padding: 1.5rem;
 }
 
@@ -142,7 +153,7 @@ code {
   width: 100%;
   padding: 14px 18px;
   border-radius: 1rem;
-  border: none;
+  border: 2px solid var(--border);
   background-color: var(--muted);
   font-family: 'Nunito', sans-serif;
   font-size: 1rem;
@@ -152,8 +163,8 @@ code {
 
 .input-field:focus {
   outline: none;
-  ring: 2px solid var(--secondary);
-  box-shadow: 0 0 0 3px rgba(17, 138, 178, 0.2);
+  border-color: var(--secondary);
+  box-shadow: 0 0 0 3px rgba(135, 206, 235, 0.2);
 }
 
 .input-field::placeholder {
@@ -181,8 +192,8 @@ code {
 }
 
 .emoji-btn.selected {
-  border-color: var(--primary);
-  background-color: var(--primary);
+  border-color: var(--secondary);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
   transform: scale(1.15);
 }
 
@@ -204,22 +215,22 @@ code {
 }
 
 .toggle-btn.yes {
-  border-color: var(--accent);
-  background-color: var(--accent);
-  color: white;
+  border-color: var(--primary-dark);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: var(--foreground);
 }
 
 .toggle-btn.no {
-  border-color: var(--success);
-  background-color: var(--success);
+  border-color: var(--secondary-dark);
+  background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-dark) 100%);
   color: white;
 }
 
 /* Avatar customization */
 .avatar-option {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
+  width: 64px;
+  height: 64px;
+  border-radius: 1rem;
   border: 3px solid transparent;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -227,16 +238,29 @@ code {
   align-items: center;
   justify-content: center;
   background-color: var(--muted);
+  overflow: hidden;
 }
 
-.avatar-option:hover {
-  transform: scale(1.1);
+.avatar-option:hover:not(.locked) {
+  transform: scale(1.05);
   border-color: var(--secondary);
 }
 
 .avatar-option.selected {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 4px rgba(255, 209, 102, 0.3);
+  border-color: var(--primary-dark);
+  box-shadow: 0 0 0 4px rgba(255, 182, 193, 0.3);
+}
+
+.avatar-option.locked {
+  opacity: 0.5;
+  cursor: not-allowed;
+  position: relative;
+}
+
+.avatar-option.locked::after {
+  content: "🔒";
+  position: absolute;
+  font-size: 1.2rem;
 }
 
 /* Streak flame */
@@ -244,7 +268,7 @@ code {
   display: flex;
   align-items: center;
   gap: 8px;
-  background: linear-gradient(135deg, #FFD166 0%, #F78C6B 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
   padding: 8px 16px;
   border-radius: 9999px;
   color: var(--foreground);
@@ -260,7 +284,7 @@ code {
   display: flex;
   align-items: center;
   gap: 1rem;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+  box-shadow: 0 4px 15px rgba(255, 182, 193, 0.1);
   border: 2px solid transparent;
   transition: all 0.2s ease;
   cursor: pointer;
@@ -272,7 +296,7 @@ code {
 }
 
 .deed-card.completed {
-  background-color: rgba(6, 214, 160, 0.1);
+  background: linear-gradient(135deg, rgba(152, 216, 170, 0.15) 0%, rgba(135, 206, 235, 0.15) 100%);
   border-color: var(--success);
 }
 
@@ -292,11 +316,11 @@ code {
 }
 
 .nav-tab.active {
-  color: var(--secondary);
+  color: var(--secondary-dark);
 }
 
 .nav-tab:hover {
-  color: var(--secondary);
+  color: var(--secondary-dark);
 }
 
 /* Progress bar */
@@ -309,9 +333,22 @@ code {
 
 .progress-bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--success) 0%, var(--secondary) 100%);
+  background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
   border-radius: 9999px;
   transition: width 0.5s ease;
+}
+
+/* Points badge */
+.points-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--foreground);
 }
 
 /* Scrollbar styling */

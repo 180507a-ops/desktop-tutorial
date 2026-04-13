@@ -19,24 +19,185 @@ import {
   Image as ImageIcon,
   Award,
   Globe,
-  ChevronDown
+  ChevronDown,
+  Lock,
+  Flame
 } from "lucide-react";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-// Design Assets from guidelines
+// Logo Component - Hand with Heart
+const AppLogo = ({ size = 80 }) => (
+  <svg width={size} height={size} viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+    {/* Heart */}
+    <path 
+      d="M50 35C50 25 40 15 30 20C20 25 20 40 30 50L50 70L70 50C80 40 80 25 70 20C60 15 50 25 50 35Z" 
+      fill="#4169E1"
+      className="animate-heart-beat"
+    />
+    {/* Hand */}
+    <path 
+      d="M25 75C25 75 30 70 40 70H60C70 70 75 75 75 75L80 85C80 85 70 90 50 90C30 90 20 85 20 85L25 75Z" 
+      fill="#4169E1"
+    />
+    <path 
+      d="M35 75V65C35 63 37 61 40 61H60C63 61 65 63 65 65V75" 
+      fill="#4169E1"
+    />
+  </svg>
+);
+
+// Design Assets
 const ASSETS = {
-  mascot: "https://static.prod-images.emergentagent.com/jobs/bb226fb4-4779-4934-af23-4313df1205b3/images/a7e6c1ecac09cc5261306e2177d71a467786b7530823b768a025b5aa543e89ba.png",
   streakBadge: "https://static.prod-images.emergentagent.com/jobs/bb226fb4-4779-4934-af23-4313df1205b3/images/4478c691c14f8311db5d44bb6372ed09849671be4ac968fc1616f184a6647028.png",
   meme: "https://static.prod-images.emergentagent.com/jobs/bb226fb4-4779-4934-af23-4313df1205b3/images/20e048668d5d9dbf26765ed57e33180b76dc56b52dac829cce5b065a5257e5df.png",
   goodDeedStar: "https://static.prod-images.emergentagent.com/jobs/bb226fb4-4779-4934-af23-4313df1205b3/images/598c2fc244c235ebbdc654568179842693dd702c40ae76754656dbda06f19fd0.png"
 };
 
-// Avatar options
-const FACES = ["😊", "😎", "🤗", "😄", "🥳", "😇"];
-const HAIR_COLORS = ["#8B4513", "#FFD700", "#1a1a1a", "#FF6B6B", "#9B59B6", "#3498DB"];
-const CLOTHES_COLORS = ["#FFD166", "#118AB2", "#F78C6B", "#06D6A0", "#9B59B6", "#FF6B6B"];
+// Avatar items with unlock requirements
+const AVATAR_ITEMS = {
+  hair: [
+    { id: 0, color: "#8B4513", unlocked: true, cost: 0 },
+    { id: 1, color: "#FFD700", unlocked: true, cost: 0 },
+    { id: 2, color: "#1a1a1a", unlocked: true, cost: 0 },
+    { id: 3, color: "#FF91A4", unlocked: true, cost: 0 },
+    { id: 4, color: "#9B59B6", unlocked: false, cost: 50 },
+    { id: 5, color: "#87CEEB", unlocked: false, cost: 50 },
+    { id: 6, color: "#98D8AA", unlocked: false, cost: 100 },
+    { id: 7, color: "#FF6B6B", unlocked: false, cost: 100 },
+  ],
+  face: [
+    { id: 0, emoji: "😊", unlocked: true, cost: 0 },
+    { id: 1, emoji: "😄", unlocked: true, cost: 0 },
+    { id: 2, emoji: "😎", unlocked: true, cost: 0 },
+    { id: 3, emoji: "🥳", unlocked: true, cost: 0 },
+    { id: 4, emoji: "😇", unlocked: false, cost: 50 },
+    { id: 5, emoji: "🤗", unlocked: false, cost: 50 },
+    { id: 6, emoji: "🤩", unlocked: false, cost: 100 },
+    { id: 7, emoji: "😜", unlocked: false, cost: 100 },
+  ],
+  shirt: [
+    { id: 0, color: "#FFB6C1", unlocked: true, cost: 0 },
+    { id: 1, color: "#87CEEB", unlocked: true, cost: 0 },
+    { id: 2, color: "#DDA0DD", unlocked: true, cost: 0 },
+    { id: 3, color: "#98D8AA", unlocked: true, cost: 0 },
+    { id: 4, color: "#FFD700", unlocked: false, cost: 50 },
+    { id: 5, color: "#FF6B6B", unlocked: false, cost: 50 },
+    { id: 6, color: "#9B59B6", unlocked: false, cost: 100 },
+    { id: 7, color: "#5DADE2", unlocked: false, cost: 100 },
+  ],
+  pants: [
+    { id: 0, color: "#4169E1", unlocked: true, cost: 0 },
+    { id: 1, color: "#2B2D42", unlocked: true, cost: 0 },
+    { id: 2, color: "#87CEEB", unlocked: true, cost: 0 },
+    { id: 3, color: "#DDA0DD", unlocked: true, cost: 0 },
+    { id: 4, color: "#FFB6C1", unlocked: false, cost: 50 },
+    { id: 5, color: "#98D8AA", unlocked: false, cost: 50 },
+    { id: 6, color: "#FFD700", unlocked: false, cost: 100 },
+    { id: 7, color: "#FF91A4", unlocked: false, cost: 100 },
+  ],
+};
+
+// Avatar Character Component
+const AvatarCharacter = ({ hair, face, shirt, pants, size = 120 }) => {
+  const hairColor = AVATAR_ITEMS.hair[hair]?.color || AVATAR_ITEMS.hair[0].color;
+  const faceEmoji = AVATAR_ITEMS.face[face]?.emoji || AVATAR_ITEMS.face[0].emoji;
+  const shirtColor = AVATAR_ITEMS.shirt[shirt]?.color || AVATAR_ITEMS.shirt[0].color;
+  const pantsColor = AVATAR_ITEMS.pants[pants]?.color || AVATAR_ITEMS.pants[0].color;
+  
+  return (
+    <div className="relative" style={{ width: size, height: size * 1.5 }}>
+      {/* Hair */}
+      <div 
+        className="absolute rounded-full"
+        style={{
+          width: size * 0.7,
+          height: size * 0.35,
+          backgroundColor: hairColor,
+          top: 0,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          borderRadius: '50% 50% 0 0',
+        }}
+      />
+      {/* Head */}
+      <div 
+        className="absolute rounded-full bg-[#FFDAB9] flex items-center justify-center"
+        style={{
+          width: size * 0.6,
+          height: size * 0.5,
+          top: size * 0.15,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          fontSize: size * 0.3,
+        }}
+      >
+        {faceEmoji}
+      </div>
+      {/* Body/Shirt */}
+      <div 
+        className="absolute rounded-t-3xl"
+        style={{
+          width: size * 0.65,
+          height: size * 0.45,
+          backgroundColor: shirtColor,
+          top: size * 0.58,
+          left: '50%',
+          transform: 'translateX(-50%)',
+        }}
+      />
+      {/* Arms */}
+      <div 
+        className="absolute rounded-full"
+        style={{
+          width: size * 0.15,
+          height: size * 0.35,
+          backgroundColor: shirtColor,
+          top: size * 0.62,
+          left: size * 0.08,
+          transform: 'rotate(15deg)',
+        }}
+      />
+      <div 
+        className="absolute rounded-full"
+        style={{
+          width: size * 0.15,
+          height: size * 0.35,
+          backgroundColor: shirtColor,
+          top: size * 0.62,
+          right: size * 0.08,
+          transform: 'rotate(-15deg)',
+        }}
+      />
+      {/* Pants */}
+      <div 
+        className="absolute"
+        style={{
+          width: size * 0.65,
+          height: size * 0.35,
+          backgroundColor: pantsColor,
+          top: size * 0.95,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          borderRadius: '0 0 30% 30%',
+        }}
+      />
+      {/* Legs gap */}
+      <div 
+        className="absolute"
+        style={{
+          width: size * 0.08,
+          height: size * 0.25,
+          backgroundColor: '#FFF5F8',
+          top: size * 1.05,
+          left: '50%',
+          transform: 'translateX(-50%)',
+        }}
+      />
+    </div>
+  );
+};
 
 // Mood emojis with scores
 const MOOD_OPTIONS = [
@@ -56,10 +217,10 @@ const LanguageSelector = () => {
     <div className="relative" data-testid="language-selector">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-3 py-2 rounded-full bg-white border-2 border-[#E2E8F0] hover:border-[#118AB2] transition-all"
+        className="flex items-center gap-2 px-3 py-2 rounded-full bg-white border-2 border-[#F0D4E0] hover:border-[#87CEEB] transition-all"
         data-testid="language-selector-btn"
       >
-        <Globe className="w-4 h-4 text-[#118AB2]" strokeWidth={3} />
+        <Globe className="w-4 h-4 text-[#87CEEB]" strokeWidth={3} />
         <span className="text-sm font-semibold text-[#2B2D42]">{languageNames[language]}</span>
         <ChevronDown className={`w-4 h-4 text-[#6C757D] transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
@@ -70,17 +231,17 @@ const LanguageSelector = () => {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="absolute top-full right-0 mt-2 bg-white rounded-2xl shadow-lg border border-[#E2E8F0] overflow-hidden z-50"
+            className="absolute top-full right-0 mt-2 bg-white rounded-2xl shadow-lg border-2 border-[#F0D4E0] overflow-hidden z-50"
           >
             {languages.map((lang) => (
               <button
                 key={lang}
                 onClick={() => { setLanguage(lang); setIsOpen(false); }}
-                className={`w-full px-4 py-3 text-left hover:bg-[#F0F7FF] transition-colors flex items-center gap-2 ${language === lang ? 'bg-[#F0F7FF]' : ''}`}
+                className={`w-full px-4 py-3 text-left hover:bg-[#F8E8EE] transition-colors flex items-center gap-2 ${language === lang ? 'bg-[#F8E8EE]' : ''}`}
                 data-testid={`language-option-${lang}`}
               >
-                {language === lang && <Check className="w-4 h-4 text-[#06D6A0]" strokeWidth={3} />}
-                <span className={`text-sm font-semibold ${language === lang ? 'text-[#118AB2]' : 'text-[#2B2D42]'}`}>
+                {language === lang && <Check className="w-4 h-4 text-[#98D8AA]" strokeWidth={3} />}
+                <span className={`text-sm font-semibold ${language === lang ? 'text-[#87CEEB]' : 'text-[#2B2D42]'}`}>
                   {languageNames[lang]}
                 </span>
               </button>
@@ -92,143 +253,9 @@ const LanguageSelector = () => {
   );
 };
 
-// Registration Screen
-const RegistrationScreen = ({ onRegister }) => {
-  const { t } = useLanguage();
-  const [form, setForm] = useState({ name: "", age: "", gender: "", email: "" });
-  const [errors, setErrors] = useState({});
-  const [loading, setLoading] = useState(false);
-
-  const validate = () => {
-    const newErrors = {};
-    if (!form.name.trim()) newErrors.name = true;
-    if (!form.age || form.age < 5 || form.age > 18) newErrors.age = true;
-    if (!form.gender) newErrors.gender = true;
-    if (!form.email.includes("@")) newErrors.email = true;
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!validate()) return;
-    
-    setLoading(true);
-    try {
-      const response = await axios.post(`${API}/users`, {
-        ...form,
-        age: parseInt(form.age)
-      });
-      localStorage.setItem("userId", response.data.id);
-      onRegister(response.data);
-    } catch (error) {
-      if (error.response?.data?.detail === "Email already registered") {
-        try {
-          const existingUser = await axios.get(`${API}/users/email/${form.email}`);
-          localStorage.setItem("userId", existingUser.data.id);
-          onRegister(existingUser.data);
-        } catch {
-          setErrors({ email: true });
-        }
-      } else {
-        setErrors({ email: true });
-      }
-    }
-    setLoading(false);
-  };
-
-  return (
-    <motion.div 
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="min-h-screen bg-[#FFFDF5] p-6 flex flex-col items-center"
-    >
-      {/* Language Selector at top */}
-      <div className="w-full max-w-sm flex justify-end mb-4">
-        <LanguageSelector />
-      </div>
-
-      <motion.img 
-        src={ASSETS.mascot} 
-        alt="FRIEND Mascot"
-        className="w-32 h-32 mb-4"
-        animate={{ y: [0, -10, 0] }}
-        transition={{ duration: 2, repeat: Infinity }}
-      />
-      
-      <h1 className="text-3xl font-bold text-[#2B2D42] mb-2" style={{ fontFamily: 'Fredoka, sans-serif' }}>
-        {t('welcome')}
-      </h1>
-      <p className="text-[#6C757D] mb-8 text-center">
-        {t('letsGetToKnow')}
-      </p>
-
-      <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-4">
-        <div>
-          <input
-            type="text"
-            placeholder={t('whatsYourName')}
-            className={`input-field ${errors.name ? 'ring-2 ring-[#F78C6B]' : ''}`}
-            value={form.name}
-            onChange={(e) => setForm({ ...form, name: e.target.value })}
-            data-testid="registration-name-input"
-          />
-        </div>
-
-        <div>
-          <input
-            type="number"
-            placeholder={t('howOldAreYou')}
-            className={`input-field ${errors.age ? 'ring-2 ring-[#F78C6B]' : ''}`}
-            value={form.age}
-            onChange={(e) => setForm({ ...form, age: e.target.value })}
-            data-testid="registration-age-input"
-          />
-        </div>
-
-        <div>
-          <div className="flex gap-3">
-            {[{ key: "boy", label: t('boy') }, { key: "girl", label: t('girl') }, { key: "other", label: t('other') }].map((g) => (
-              <button
-                key={g.key}
-                type="button"
-                className={`toggle-btn flex-1 ${form.gender === g.key ? "yes" : ""}`}
-                onClick={() => setForm({ ...form, gender: g.key })}
-                data-testid={`registration-gender-${g.key}`}
-              >
-                {g.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div>
-          <input
-            type="email"
-            placeholder={t('parentsEmail')}
-            className={`input-field ${errors.email ? 'ring-2 ring-[#F78C6B]' : ''}`}
-            value={form.email}
-            onChange={(e) => setForm({ ...form, email: e.target.value })}
-            data-testid="registration-email-input"
-          />
-        </div>
-
-        <button 
-          type="submit" 
-          className="btn-primary w-full mt-6"
-          disabled={loading}
-          data-testid="registration-submit-btn"
-        >
-          {loading ? t('loading') : t('letsGo')}
-        </button>
-      </form>
-    </motion.div>
-  );
-};
-
 // Home Dashboard
 const HomeDashboard = ({ user, onCheckIn, todayCheckin, refreshUser }) => {
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
   const [showCheckin, setShowCheckin] = useState(false);
   const [moodSelected, setMoodSelected] = useState(null);
   const [isBothered, setIsBothered] = useState(null);
@@ -282,36 +309,47 @@ const HomeDashboard = ({ user, onCheckIn, todayCheckin, refreshUser }) => {
 
   return (
     <div className="p-6 pb-24">
-      {showConfetti && <Confetti recycle={false} numberOfPieces={200} />}
+      {showConfetti && <Confetti recycle={false} numberOfPieces={200} colors={['#FFB6C1', '#87CEEB', '#DDA0DD', '#98D8AA']} />}
       
-      {/* Header with Language Selector */}
+      {/* Header with Logo and Language Selector */}
       <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-[#2B2D42]" style={{ fontFamily: 'Fredoka, sans-serif' }}>
-            {t('hi')}, {user.name}!
-          </h1>
-          <p className="text-[#6C757D]">{t('howAreYouToday')}</p>
-        </div>
         <div className="flex items-center gap-3">
+          <AppLogo size={50} />
+          <div>
+            <h1 className="text-xl font-bold text-[#2B2D42]" style={{ fontFamily: 'Fredoka, sans-serif' }}>
+              {t('hi')}, {user.name}!
+            </h1>
+            <p className="text-[#6C757D] text-sm">{t('howAreYouToday')}</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
           <LanguageSelector />
           <div className="streak-badge" data-testid="streak-badge">
-            <img src={ASSETS.streakBadge} alt="Streak" className="w-6 h-6" />
+            <Flame className="w-5 h-5 text-[#FF6B6B]" />
             <span>{user.current_streak}</span>
           </div>
+        </div>
+      </div>
+
+      {/* Points Display */}
+      <div className="flex justify-center mb-6">
+        <div className="points-badge text-lg">
+          <Star className="w-5 h-5" />
+          <span>{user.total_checkins * 10} {t('points')}</span>
         </div>
       </div>
 
       {/* Daily Check-in Card */}
       {!todayCheckin?.checked_in ? (
         <motion.div 
-          className="card mb-6 cursor-pointer"
+          className="card mb-6 cursor-pointer border-2 border-[#FFB6C1]"
           whileHover={{ scale: 1.02 }}
           onClick={() => setShowCheckin(true)}
           data-testid="daily-checkin-card"
         >
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-full bg-[#FFD166] flex items-center justify-center">
-              <Heart className="w-7 h-7 text-[#2B2D42]" strokeWidth={3} />
+            <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[#FFB6C1] to-[#87CEEB] flex items-center justify-center">
+              <Heart className="w-7 h-7 text-white" strokeWidth={3} />
             </div>
             <div className="flex-1">
               <h3 className="font-bold text-[#2B2D42]" style={{ fontFamily: 'Fredoka, sans-serif' }}>
@@ -319,17 +357,17 @@ const HomeDashboard = ({ user, onCheckIn, todayCheckin, refreshUser }) => {
               </h3>
               <p className="text-[#6C757D] text-sm">{t('tellMeHowYouFeel')}</p>
             </div>
-            <ChevronRight className="text-[#6C757D]" />
+            <ChevronRight className="text-[#FFB6C1]" />
           </div>
         </motion.div>
       ) : (
         <motion.div 
-          className="card mb-6 border-2 border-[#06D6A0]"
+          className="card mb-6 border-2 border-[#98D8AA]"
           initial={{ scale: 0.9 }}
           animate={{ scale: 1 }}
         >
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-full bg-[#06D6A0] flex items-center justify-center">
+            <div className="w-14 h-14 rounded-full bg-[#98D8AA] flex items-center justify-center">
               <Check className="w-7 h-7 text-white" strokeWidth={3} />
             </div>
             <div>
@@ -344,13 +382,13 @@ const HomeDashboard = ({ user, onCheckIn, todayCheckin, refreshUser }) => {
 
       {/* Supportive Message */}
       <motion.div 
-        className="card mb-6 bg-gradient-to-r from-[#F0F7FF] to-[#FFFDF5]"
+        className="card mb-6 bg-gradient-to-r from-[#F8E8EE] to-[#E8F4FD]"
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         data-testid="supportive-message-card"
       >
         <div className="flex items-start gap-4">
-          <img src={ASSETS.mascot} alt="Mascot" className="w-12 h-12" />
+          <AppLogo size={48} />
           <div>
             <p className="text-[#2B2D42] font-semibold leading-relaxed">
               {supportiveMessage}
@@ -368,7 +406,7 @@ const HomeDashboard = ({ user, onCheckIn, todayCheckin, refreshUser }) => {
         data-testid="daily-meme-card"
       >
         <h3 className="font-bold text-[#2B2D42] mb-3" style={{ fontFamily: 'Fredoka, sans-serif' }}>
-          <ImageIcon className="inline w-5 h-5 mr-2" strokeWidth={3} />
+          <ImageIcon className="inline w-5 h-5 mr-2 text-[#87CEEB]" strokeWidth={3} />
           {t('dailySmile')}
         </h3>
         <img 
@@ -535,17 +573,19 @@ const GoodDeedsScreen = ({ user, completedDeeds, onCompleteDeed }) => {
 
   return (
     <div className="p-6 pb-24">
-      {showCelebration && <Confetti recycle={false} numberOfPieces={150} />}
+      {showCelebration && <Confetti recycle={false} numberOfPieces={150} colors={['#FFB6C1', '#87CEEB', '#DDA0DD', '#98D8AA']} />}
       
       {/* Header with Language Selector */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-4">
-          <img src={ASSETS.goodDeedStar} alt="Star" className="w-12 h-12" />
+          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#FFB6C1] to-[#87CEEB] flex items-center justify-center">
+            <Sparkles className="w-6 h-6 text-white" strokeWidth={3} />
+          </div>
           <div>
-            <h1 className="text-2xl font-bold text-[#2B2D42]" style={{ fontFamily: 'Fredoka, sans-serif' }}>
+            <h1 className="text-xl font-bold text-[#2B2D42]" style={{ fontFamily: 'Fredoka, sans-serif' }}>
               {t('doGoodThings')}
             </h1>
-            <p className="text-[#6C757D]">{t('pickOneToBrighten')}</p>
+            <p className="text-[#6C757D] text-sm">{t('pickOneToBrighten')}</p>
           </div>
         </div>
         <LanguageSelector />
@@ -563,12 +603,12 @@ const GoodDeedsScreen = ({ user, completedDeeds, onCompleteDeed }) => {
             data-testid={`deed-card-${deed.id}`}
           >
             <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-              isCompleted(deed.id) ? "bg-[#06D6A0]" : "bg-[#F0F7FF]"
+              isCompleted(deed.id) ? "bg-[#98D8AA]" : "bg-[#F8E8EE]"
             }`}>
               {isCompleted(deed.id) ? (
                 <Check className="w-5 h-5 text-white" strokeWidth={3} />
               ) : (
-                <Star className="w-5 h-5 text-[#FFD166]" strokeWidth={3} />
+                <Star className="w-5 h-5 text-[#FFB6C1]" strokeWidth={3} />
               )}
             </div>
             <div className="flex-1">
@@ -577,7 +617,7 @@ const GoodDeedsScreen = ({ user, completedDeeds, onCompleteDeed }) => {
               </h3>
               <p className="text-[#6C757D] text-sm">{deed.description}</p>
             </div>
-            <div className="text-[#FFD166] font-bold text-sm">
+            <div className="points-badge">
               +{deed.points}
             </div>
           </motion.div>
@@ -594,25 +634,25 @@ const GoodDeedsScreen = ({ user, completedDeeds, onCompleteDeed }) => {
             exit={{ opacity: 0 }}
           >
             <motion.div 
-              className="bg-white rounded-3xl p-8 text-center max-w-xs"
+              className="bg-white rounded-3xl p-8 text-center max-w-xs border-4 border-[#FFB6C1]"
               initial={{ scale: 0.5 }}
               animate={{ scale: 1 }}
               transition={{ type: "spring", damping: 15 }}
             >
-              <motion.img 
-                src={ASSETS.goodDeedStar}
-                alt="Star"
-                className="w-24 h-24 mx-auto mb-4"
+              <motion.div 
+                className="w-24 h-24 mx-auto mb-4 rounded-full bg-gradient-to-br from-[#FFB6C1] to-[#87CEEB] flex items-center justify-center"
                 animate={{ rotate: [0, 10, -10, 0] }}
                 transition={{ duration: 0.5, repeat: 2 }}
-              />
+              >
+                <Star className="w-12 h-12 text-white" />
+              </motion.div>
               <h2 className="text-2xl font-bold text-[#2B2D42] mb-2" style={{ fontFamily: 'Fredoka, sans-serif' }}>
                 {t('amazingCelebration')} 🎉
               </h2>
               <p className="text-[#6C757D]">
                 {t('youCompleted')} {celebratedDeed.title}
               </p>
-              <p className="text-[#FFD166] font-bold mt-2">+{celebratedDeed.points} {t('points')}</p>
+              <p className="text-[#FFB6C1] font-bold mt-2 text-lg">+{celebratedDeed.points} {t('points')}</p>
             </motion.div>
           </motion.div>
         )}
@@ -624,10 +664,35 @@ const GoodDeedsScreen = ({ user, completedDeeds, onCompleteDeed }) => {
 // Profile & Avatar Screen
 const ProfileScreen = ({ user, onUpdateAvatar }) => {
   const { t } = useLanguage();
-  const [avatarFace, setAvatarFace] = useState(user.avatar_face || 0);
   const [avatarHair, setAvatarHair] = useState(user.avatar_hair || 0);
-  const [avatarClothes, setAvatarClothes] = useState(user.avatar_clothes || 0);
+  const [avatarFace, setAvatarFace] = useState(user.avatar_face || 0);
+  const [avatarShirt, setAvatarShirt] = useState(user.avatar_clothes || 0);
+  const [avatarPants, setAvatarPants] = useState(0);
   const [saving, setSaving] = useState(false);
+  const [unlockedItems, setUnlockedItems] = useState({
+    hair: [0, 1, 2, 3],
+    face: [0, 1, 2, 3],
+    shirt: [0, 1, 2, 3],
+    pants: [0, 1, 2, 3],
+  });
+  
+  const userPoints = user.total_checkins * 10;
+
+  const isItemUnlocked = (category, id) => {
+    return unlockedItems[category].includes(id);
+  };
+
+  const handleSelectItem = (category, id) => {
+    if (!isItemUnlocked(category, id)) return;
+    
+    switch(category) {
+      case 'hair': setAvatarHair(id); break;
+      case 'face': setAvatarFace(id); break;
+      case 'shirt': setAvatarShirt(id); break;
+      case 'pants': setAvatarPants(id); break;
+      default: break;
+    }
+  };
 
   const handleSave = async () => {
     setSaving(true);
@@ -635,7 +700,7 @@ const ProfileScreen = ({ user, onUpdateAvatar }) => {
       await axios.patch(`${API}/users/${user.id}/avatar`, {
         avatar_face: avatarFace,
         avatar_hair: avatarHair,
-        avatar_clothes: avatarClothes
+        avatar_clothes: avatarShirt
       });
       onUpdateAvatar();
     } catch (error) {
@@ -644,12 +709,47 @@ const ProfileScreen = ({ user, onUpdateAvatar }) => {
     setSaving(false);
   };
 
+  const renderItemSelector = (category, items, selectedId, label) => (
+    <div className="card mb-4">
+      <h3 className="font-bold text-[#2B2D42] mb-3" style={{ fontFamily: 'Fredoka, sans-serif' }}>
+        {label}
+      </h3>
+      <div className="flex gap-2 flex-wrap">
+        {items.map((item) => {
+          const unlocked = isItemUnlocked(category, item.id);
+          return (
+            <button
+              key={item.id}
+              className={`avatar-option ${selectedId === item.id ? "selected" : ""} ${!unlocked ? "locked" : ""}`}
+              style={{ backgroundColor: item.color || '#F8E8EE' }}
+              onClick={() => handleSelectItem(category, item.id)}
+              data-testid={`${category}-option-${item.id}`}
+              disabled={!unlocked}
+            >
+              {item.emoji && <span className="text-2xl">{item.emoji}</span>}
+              {!unlocked && (
+                <div className="absolute inset-0 bg-slate-900/30 rounded-xl flex items-center justify-center">
+                  <Lock className="w-5 h-5 text-white" />
+                </div>
+              )}
+            </button>
+          );
+        })}
+      </div>
+      {items.some(item => !isItemUnlocked(category, item.id)) && (
+        <p className="text-xs text-[#6C757D] mt-2 flex items-center gap-1">
+          <Lock className="w-3 h-3" /> {t('lockedItemsHint') || "Earn points to unlock more!"}
+        </p>
+      )}
+    </div>
+  );
+
   return (
     <div className="p-6 pb-24">
       {/* Header with Language Selector */}
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-[#2B2D42]" style={{ fontFamily: 'Fredoka, sans-serif' }}>
-          <User className="inline w-6 h-6 mr-2" strokeWidth={3} />
+        <h1 className="text-xl font-bold text-[#2B2D42]" style={{ fontFamily: 'Fredoka, sans-serif' }}>
+          <User className="inline w-6 h-6 mr-2 text-[#87CEEB]" strokeWidth={3} />
           {t('yourProfile')}
         </h1>
         <LanguageSelector />
@@ -657,98 +757,49 @@ const ProfileScreen = ({ user, onUpdateAvatar }) => {
 
       {/* Avatar Preview */}
       <motion.div 
-        className="card mb-6 flex flex-col items-center py-8"
+        className="card mb-6 flex flex-col items-center py-6"
         initial={{ scale: 0.9 }}
         animate={{ scale: 1 }}
       >
-        <div 
-          className="w-32 h-32 rounded-full flex items-center justify-center text-6xl mb-4"
-          style={{ 
-            backgroundColor: CLOTHES_COLORS[avatarClothes],
-            border: `4px solid ${HAIR_COLORS[avatarHair]}`
-          }}
-          data-testid="avatar-preview"
-        >
-          {FACES[avatarFace]}
-        </div>
-        <h2 className="text-xl font-bold text-[#2B2D42]" style={{ fontFamily: 'Fredoka, sans-serif' }}>
+        <AvatarCharacter 
+          hair={avatarHair}
+          face={avatarFace}
+          shirt={avatarShirt}
+          pants={avatarPants}
+          size={100}
+        />
+        <h2 className="text-xl font-bold text-[#2B2D42] mt-4" style={{ fontFamily: 'Fredoka, sans-serif' }}>
           {user.name}
         </h2>
-        <p className="text-[#6C757D]">{user.age} {t('yearsOld')}</p>
+        <div className="points-badge mt-2">
+          <Star className="w-4 h-4" />
+          <span>{userPoints} {t('points')}</span>
+        </div>
       </motion.div>
 
-      {/* Face Selection */}
-      <div className="card mb-4">
-        <h3 className="font-bold text-[#2B2D42] mb-3" style={{ fontFamily: 'Fredoka, sans-serif' }}>
-          {t('pickYourFace')}
-        </h3>
-        <div className="flex gap-2 flex-wrap">
-          {FACES.map((face, i) => (
-            <button
-              key={i}
-              className={`avatar-option text-2xl ${avatarFace === i ? "selected" : ""}`}
-              onClick={() => setAvatarFace(i)}
-              data-testid={`face-option-${i}`}
-            >
-              {face}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Hair Color Selection */}
-      <div className="card mb-4">
-        <h3 className="font-bold text-[#2B2D42] mb-3" style={{ fontFamily: 'Fredoka, sans-serif' }}>
-          {t('pickHairColor')}
-        </h3>
-        <div className="flex gap-2 flex-wrap">
-          {HAIR_COLORS.map((color, i) => (
-            <button
-              key={i}
-              className={`avatar-option ${avatarHair === i ? "selected" : ""}`}
-              style={{ backgroundColor: color }}
-              onClick={() => setAvatarHair(i)}
-              data-testid={`hair-option-${i}`}
-            />
-          ))}
-        </div>
-      </div>
-
-      {/* Clothes Color Selection */}
-      <div className="card mb-6">
-        <h3 className="font-bold text-[#2B2D42] mb-3" style={{ fontFamily: 'Fredoka, sans-serif' }}>
-          {t('pickClothesColor')}
-        </h3>
-        <div className="flex gap-2 flex-wrap">
-          {CLOTHES_COLORS.map((color, i) => (
-            <button
-              key={i}
-              className={`avatar-option ${avatarClothes === i ? "selected" : ""}`}
-              style={{ backgroundColor: color }}
-              onClick={() => setAvatarClothes(i)}
-              data-testid={`clothes-option-${i}`}
-            />
-          ))}
-        </div>
-      </div>
+      {/* Avatar Customization */}
+      {renderItemSelector('hair', AVATAR_ITEMS.hair, avatarHair, t('pickHairColor'))}
+      {renderItemSelector('face', AVATAR_ITEMS.face, avatarFace, t('pickYourFace'))}
+      {renderItemSelector('shirt', AVATAR_ITEMS.shirt, avatarShirt, t('pickClothesColor'))}
+      {renderItemSelector('pants', AVATAR_ITEMS.pants, avatarPants, t('pickPantsColor') || "Pick Pants Color")}
 
       {/* Stats */}
       <div className="card mb-6">
         <h3 className="font-bold text-[#2B2D42] mb-4" style={{ fontFamily: 'Fredoka, sans-serif' }}>
-          <Award className="inline w-5 h-5 mr-2" strokeWidth={3} />
+          <Award className="inline w-5 h-5 mr-2 text-[#FFB6C1]" strokeWidth={3} />
           {t('yourStats')}
         </h3>
         <div className="grid grid-cols-3 gap-4 text-center">
           <div>
-            <div className="text-2xl font-bold text-[#FFD166]">{user.current_streak}</div>
+            <div className="text-2xl font-bold text-[#FF91A4]">{user.current_streak}</div>
             <div className="text-xs text-[#6C757D]">{t('currentStreak')}</div>
           </div>
           <div>
-            <div className="text-2xl font-bold text-[#118AB2]">{user.longest_streak}</div>
+            <div className="text-2xl font-bold text-[#87CEEB]">{user.longest_streak}</div>
             <div className="text-xs text-[#6C757D]">{t('longestStreak')}</div>
           </div>
           <div>
-            <div className="text-2xl font-bold text-[#06D6A0]">{user.total_checkins}</div>
+            <div className="text-2xl font-bold text-[#98D8AA]">{user.total_checkins}</div>
             <div className="text-xs text-[#6C757D]">{t('totalCheckins')}</div>
           </div>
         </div>
@@ -772,9 +823,9 @@ const AnalysisScreen = ({ user, analysis, checkins }) => {
   
   const getTrendIcon = () => {
     switch (analysis?.trend) {
-      case "improving": return <Smile className="w-6 h-6 text-[#06D6A0]" strokeWidth={3} />;
-      case "needs_attention": return <Frown className="w-6 h-6 text-[#F78C6B]" strokeWidth={3} />;
-      default: return <Meh className="w-6 h-6 text-[#FFD166]" strokeWidth={3} />;
+      case "improving": return <Smile className="w-6 h-6 text-[#98D8AA]" strokeWidth={3} />;
+      case "needs_attention": return <Frown className="w-6 h-6 text-[#FF91A4]" strokeWidth={3} />;
+      default: return <Meh className="w-6 h-6 text-[#87CEEB]" strokeWidth={3} />;
     }
   };
 
@@ -790,8 +841,8 @@ const AnalysisScreen = ({ user, analysis, checkins }) => {
     <div className="p-6 pb-24">
       {/* Header with Language Selector */}
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-[#2B2D42]" style={{ fontFamily: 'Fredoka, sans-serif' }}>
-          <Sparkles className="inline w-6 h-6 mr-2" strokeWidth={3} />
+        <h1 className="text-xl font-bold text-[#2B2D42]" style={{ fontFamily: 'Fredoka, sans-serif' }}>
+          <Heart className="inline w-6 h-6 mr-2 text-[#FFB6C1]" strokeWidth={3} />
           {t('howYoureDoing')}
         </h1>
         <LanguageSelector />
@@ -799,7 +850,7 @@ const AnalysisScreen = ({ user, analysis, checkins }) => {
 
       {/* Overall Score */}
       <motion.div 
-        className="card mb-6 text-center"
+        className="card mb-6 text-center bg-gradient-to-br from-[#F8E8EE] to-[#E8F4FD]"
         initial={{ scale: 0.9 }}
         animate={{ scale: 1 }}
       >
@@ -809,7 +860,7 @@ const AnalysisScreen = ({ user, analysis, checkins }) => {
             {getTrendLabel()}
           </span>
         </div>
-        <div className="text-5xl font-bold text-[#118AB2] mb-2" data-testid="overall-score">
+        <div className="text-5xl font-bold text-[#87CEEB] mb-2" data-testid="overall-score">
           {analysis?.overall_score || 0}/5
         </div>
         <p className="text-[#6C757D] text-sm">
@@ -820,12 +871,12 @@ const AnalysisScreen = ({ user, analysis, checkins }) => {
       {/* Alerts */}
       {analysis?.alerts?.length > 0 && (
         <motion.div 
-          className="card mb-6 border-2 border-[#F78C6B]"
+          className="card mb-6 border-2 border-[#FF91A4]"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
         >
           <div className="flex items-start gap-3">
-            <AlertCircle className="w-6 h-6 text-[#F78C6B] flex-shrink-0" strokeWidth={3} />
+            <AlertCircle className="w-6 h-6 text-[#FF91A4] flex-shrink-0" strokeWidth={3} />
             <div>
               <h3 className="font-bold text-[#2B2D42] mb-2" style={{ fontFamily: 'Fredoka, sans-serif' }}>
                 {t('friendlyReminder')}
@@ -883,7 +934,7 @@ const BottomNav = ({ activeTab, setActiveTab }) => {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E2E8F0] flex max-w-md mx-auto" data-testid="bottom-navigation">
+    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t-2 border-[#F0D4E0] flex max-w-md mx-auto" data-testid="bottom-navigation">
       {tabs.map((tab) => (
         <button
           key={tab.id}
@@ -891,7 +942,11 @@ const BottomNav = ({ activeTab, setActiveTab }) => {
           onClick={() => setActiveTab(tab.id)}
           data-testid={`nav-tab-${tab.id}`}
         >
-          <tab.icon className="w-6 h-6" strokeWidth={activeTab === tab.id ? 3 : 2} />
+          <tab.icon 
+            className="w-6 h-6" 
+            strokeWidth={activeTab === tab.id ? 3 : 2}
+            style={{ color: activeTab === tab.id ? '#87CEEB' : undefined }}
+          />
           <span className="text-xs font-semibold">{tab.label}</span>
         </button>
       ))}
@@ -901,6 +956,7 @@ const BottomNav = ({ activeTab, setActiveTab }) => {
 
 // Main App Content
 function AppContent() {
+  const { t } = useLanguage();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("home");
@@ -917,6 +973,30 @@ function AppContent() {
     } catch {
       localStorage.removeItem("userId");
       return null;
+    }
+  }, []);
+
+  const createDemoUser = useCallback(async () => {
+    try {
+      // Try to get existing demo user first
+      const existingUser = await axios.get(`${API}/users/email/demo@thefriend.app`);
+      localStorage.setItem("userId", existingUser.data.id);
+      return existingUser.data;
+    } catch {
+      // Create new demo user
+      try {
+        const response = await axios.post(`${API}/users`, {
+          name: "Demo",
+          age: 10,
+          gender: "other",
+          email: "demo@thefriend.app"
+        });
+        localStorage.setItem("userId", response.data.id);
+        return response.data;
+      } catch (error) {
+        console.error("Error creating demo user:", error);
+        return null;
+      }
     }
   }, []);
 
@@ -958,27 +1038,33 @@ function AppContent() {
 
   useEffect(() => {
     const init = async () => {
-      const storedUserId = localStorage.getItem("userId");
+      let storedUserId = localStorage.getItem("userId");
+      let userData = null;
+      
       if (storedUserId) {
-        const userData = await fetchUser(storedUserId);
+        userData = await fetchUser(storedUserId);
+      }
+      
+      // Auto-create demo user if no user exists (skip registration)
+      if (!userData) {
+        userData = await createDemoUser();
         if (userData) {
-          await Promise.all([
-            fetchTodayCheckin(storedUserId),
-            fetchCompletedDeeds(storedUserId),
-            fetchAnalysis(storedUserId),
-            fetchCheckins(storedUserId)
-          ]);
+          setUser(userData);
         }
+      }
+      
+      if (userData) {
+        await Promise.all([
+          fetchTodayCheckin(userData.id),
+          fetchCompletedDeeds(userData.id),
+          fetchAnalysis(userData.id),
+          fetchCheckins(userData.id)
+        ]);
       }
       setLoading(false);
     };
     init();
-  }, [fetchUser, fetchTodayCheckin, fetchCompletedDeeds, fetchAnalysis, fetchCheckins]);
-
-  const handleRegister = async (userData) => {
-    setUser(userData);
-    setTodayCheckin({ checked_in: false });
-  };
+  }, [fetchUser, createDemoUser, fetchTodayCheckin, fetchCompletedDeeds, fetchAnalysis, fetchCheckins]);
 
   const refreshData = async () => {
     if (user) {
@@ -999,24 +1085,33 @@ function AppContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#FFFDF5] flex items-center justify-center">
-        <motion.img 
-          src={ASSETS.mascot}
-          alt="Loading"
-          className="w-24 h-24"
-          animate={{ rotate: [0, 10, -10, 0] }}
-          transition={{ duration: 1, repeat: Infinity }}
-        />
+      <div className="min-h-screen bg-[#FFF5F8] flex flex-col items-center justify-center">
+        <motion.div
+          animate={{ scale: [1, 1.1, 1] }}
+          transition={{ duration: 1.5, repeat: Infinity }}
+        >
+          <AppLogo size={100} />
+        </motion.div>
+        <h2 className="text-xl font-bold text-[#2B2D42] mt-4" style={{ fontFamily: 'Fredoka, sans-serif' }}>
+          The FRIEND app
+        </h2>
       </div>
     );
   }
 
   if (!user) {
-    return <RegistrationScreen onRegister={handleRegister} />;
+    return (
+      <div className="min-h-screen bg-[#FFF5F8] flex flex-col items-center justify-center p-6">
+        <AppLogo size={100} />
+        <h2 className="text-xl font-bold text-[#2B2D42] mt-4" style={{ fontFamily: 'Fredoka, sans-serif' }}>
+          Loading...
+        </h2>
+      </div>
+    );
   }
 
   return (
-    <div className="min-h-screen bg-[#FFFDF5] max-w-md mx-auto relative">
+    <div className="min-h-screen bg-[#FFF5F8] max-w-md mx-auto relative">
       {activeTab === "home" && (
         <HomeDashboard 
           user={user}
