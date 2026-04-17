@@ -79,6 +79,18 @@ export const translations = {
     pickPantsColor: "Pick Pants Color",
     lockedItemsHint: "Earn points to unlock more!",
     points: "points",
+    goodDeedsCompleted: "Good Deeds Done",
+    
+    // Mini Games
+    miniGames: "Mini Games",
+    memoryGame: "Memory Game",
+    findThePairs: "Find the matching pairs!",
+    moves: "Moves",
+    pairs: "Pairs",
+    playAgain: "Play Again",
+    youWon: "You Won!",
+    congratsMemory: "Great memory skills!",
+    earnedPoints: "You earned",
     
     // Analysis
     howYoureDoing: "How You're Doing",
@@ -189,6 +201,18 @@ export const translations = {
     pickPantsColor: "Выбери цвет штанов",
     lockedItemsHint: "Зарабатывай баллы, чтобы открыть больше!",
     points: "очков",
+    goodDeedsCompleted: "Добрых дел сделано",
+    
+    // Mini Games
+    miniGames: "Мини-игры",
+    memoryGame: "Игра Память",
+    findThePairs: "Найди одинаковые пары!",
+    moves: "Ходов",
+    pairs: "Пары",
+    playAgain: "Играть снова",
+    youWon: "Ты выиграл!",
+    congratsMemory: "Отличная память!",
+    earnedPoints: "Ты заработал",
     
     // Analysis
     howYoureDoing: "Как у тебя дела",
