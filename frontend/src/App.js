@@ -21,7 +21,10 @@ import {
   Globe,
   ChevronDown,
   Lock,
-  Flame
+  Flame,
+  Gamepad2,
+  RotateCcw,
+  Trophy
 } from "lucide-react";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -576,7 +579,7 @@ const GoodDeedsScreen = ({ user, completedDeeds, onCompleteDeed }) => {
       {showCelebration && <Confetti recycle={false} numberOfPieces={150} colors={['#FFB6C1', '#87CEEB', '#DDA0DD', '#98D8AA']} />}
       
       {/* Header with Language Selector */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#FFB6C1] to-[#87CEEB] flex items-center justify-center">
             <Sparkles className="w-6 h-6 text-white" strokeWidth={3} />
@@ -589,6 +592,17 @@ const GoodDeedsScreen = ({ user, completedDeeds, onCompleteDeed }) => {
           </div>
         </div>
         <LanguageSelector />
+      </div>
+
+      {/* Good Deeds Counter */}
+      <div className="flex justify-center mb-6">
+        <div className="bg-gradient-to-r from-[#98D8AA] to-[#87CEEB] px-6 py-3 rounded-2xl flex items-center gap-3">
+          <Trophy className="w-6 h-6 text-white" />
+          <div className="text-center">
+            <div className="text-2xl font-bold text-white">{completedDeeds.length}</div>
+            <div className="text-xs text-white/80">{t('goodDeedsCompleted')}</div>
+          </div>
+        </div>
       </div>
 
       <div className="space-y-3">
@@ -653,6 +667,180 @@ const GoodDeedsScreen = ({ user, completedDeeds, onCompleteDeed }) => {
                 {t('youCompleted')} {celebratedDeed.title}
               </p>
               <p className="text-[#FFB6C1] font-bold mt-2 text-lg">+{celebratedDeed.points} {t('points')}</p>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
+// Memory Game Component
+const MEMORY_CARDS = ['🌸', '🦋', '🌈', '⭐', '🎀', '💖', '🐱', '🌺'];
+
+const MemoryGame = () => {
+  const { t } = useLanguage();
+  const [cards, setCards] = useState([]);
+  const [flipped, setFlipped] = useState([]);
+  const [matched, setMatched] = useState([]);
+  const [moves, setMoves] = useState(0);
+  const [gameWon, setGameWon] = useState(false);
+  const [showCelebration, setShowCelebration] = useState(false);
+
+  const initializeGame = useCallback(() => {
+    const shuffled = [...MEMORY_CARDS, ...MEMORY_CARDS]
+      .sort(() => Math.random() - 0.5)
+      .map((emoji, index) => ({ id: index, emoji, isFlipped: false }));
+    setCards(shuffled);
+    setFlipped([]);
+    setMatched([]);
+    setMoves(0);
+    setGameWon(false);
+    setShowCelebration(false);
+  }, []);
+
+  useEffect(() => {
+    initializeGame();
+  }, [initializeGame]);
+
+  const handleCardClick = (cardId) => {
+    if (flipped.length === 2) return;
+    if (flipped.includes(cardId)) return;
+    if (matched.includes(cardId)) return;
+
+    const newFlipped = [...flipped, cardId];
+    setFlipped(newFlipped);
+
+    if (newFlipped.length === 2) {
+      setMoves(m => m + 1);
+      const [first, second] = newFlipped;
+      if (cards[first].emoji === cards[second].emoji) {
+        setMatched(m => [...m, first, second]);
+        setFlipped([]);
+        
+        // Check win condition
+        if (matched.length + 2 === cards.length) {
+          setGameWon(true);
+          setShowCelebration(true);
+        }
+      } else {
+        setTimeout(() => setFlipped([]), 800);
+      }
+    }
+  };
+
+  const isCardFlipped = (cardId) => flipped.includes(cardId) || matched.includes(cardId);
+
+  return (
+    <div className="p-6 pb-24">
+      {showCelebration && <Confetti recycle={false} numberOfPieces={200} colors={['#FFB6C1', '#87CEEB', '#DDA0DD', '#98D8AA']} />}
+      
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#DDA0DD] to-[#87CEEB] flex items-center justify-center">
+            <Gamepad2 className="w-6 h-6 text-white" strokeWidth={3} />
+          </div>
+          <div>
+            <h1 className="text-xl font-bold text-[#2B2D42]" style={{ fontFamily: 'Fredoka, sans-serif' }}>
+              {t('memoryGame')}
+            </h1>
+            <p className="text-[#6C757D] text-sm">{t('findThePairs')}</p>
+          </div>
+        </div>
+        <LanguageSelector />
+      </div>
+
+      {/* Stats */}
+      <div className="flex justify-center gap-4 mb-6">
+        <div className="bg-[#F8E8EE] px-4 py-2 rounded-xl text-center">
+          <div className="text-xl font-bold text-[#FF91A4]">{moves}</div>
+          <div className="text-xs text-[#6C757D]">{t('moves')}</div>
+        </div>
+        <div className="bg-[#E8F4FD] px-4 py-2 rounded-xl text-center">
+          <div className="text-xl font-bold text-[#87CEEB]">{matched.length / 2}/{MEMORY_CARDS.length}</div>
+          <div className="text-xs text-[#6C757D]">{t('pairs')}</div>
+        </div>
+      </div>
+
+      {/* Game Board */}
+      <div className="grid grid-cols-4 gap-3 mb-6">
+        {cards.map((card) => (
+          <motion.button
+            key={card.id}
+            className={`aspect-square rounded-2xl flex items-center justify-center text-3xl transition-all ${
+              isCardFlipped(card.id) 
+                ? 'bg-gradient-to-br from-[#FFB6C1] to-[#87CEEB]' 
+                : 'bg-[#F8E8EE] hover:bg-[#F0D4E0]'
+            } ${matched.includes(card.id) ? 'ring-4 ring-[#98D8AA]' : ''}`}
+            onClick={() => handleCardClick(card.id)}
+            whileTap={{ scale: 0.95 }}
+            data-testid={`memory-card-${card.id}`}
+          >
+            <motion.span
+              initial={false}
+              animate={{ 
+                rotateY: isCardFlipped(card.id) ? 0 : 180,
+                opacity: isCardFlipped(card.id) ? 1 : 0
+              }}
+              transition={{ duration: 0.3 }}
+            >
+              {card.emoji}
+            </motion.span>
+            {!isCardFlipped(card.id) && (
+              <span className="text-[#FFB6C1]">?</span>
+            )}
+          </motion.button>
+        ))}
+      </div>
+
+      {/* Play Again Button */}
+      <button
+        className="btn-secondary w-full flex items-center justify-center gap-2"
+        onClick={initializeGame}
+        data-testid="play-again-btn"
+      >
+        <RotateCcw className="w-5 h-5" />
+        {t('playAgain')}
+      </button>
+
+      {/* Win Modal */}
+      <AnimatePresence>
+        {gameWon && (
+          <motion.div 
+            className="fixed inset-0 bg-slate-900/30 backdrop-blur-sm z-50 flex items-center justify-center p-6"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div 
+              className="bg-white rounded-3xl p-8 text-center max-w-xs border-4 border-[#98D8AA]"
+              initial={{ scale: 0.5 }}
+              animate={{ scale: 1 }}
+              transition={{ type: "spring", damping: 15 }}
+            >
+              <motion.div 
+                className="text-6xl mb-4"
+                animate={{ rotate: [0, 10, -10, 0] }}
+                transition={{ duration: 0.5, repeat: 3 }}
+              >
+                🎉
+              </motion.div>
+              <h2 className="text-2xl font-bold text-[#2B2D42] mb-2" style={{ fontFamily: 'Fredoka, sans-serif' }}>
+                {t('youWon')}
+              </h2>
+              <p className="text-[#6C757D] mb-2">
+                {t('congratsMemory')}
+              </p>
+              <p className="text-[#87CEEB] font-bold">
+                {moves} {t('moves')}
+              </p>
+              <button
+                className="btn-primary mt-4"
+                onClick={initializeGame}
+              >
+                {t('playAgain')}
+              </button>
             </motion.div>
           </motion.div>
         )}
@@ -929,6 +1117,7 @@ const BottomNav = ({ activeTab, setActiveTab }) => {
   const tabs = [
     { id: "home", icon: Home, label: t('home') },
     { id: "deeds", icon: Sparkles, label: t('goodDeeds') },
+    { id: "games", icon: Gamepad2, label: t('miniGames') },
     { id: "analysis", icon: Heart, label: t('feelings') },
     { id: "profile", icon: User, label: t('me') }
   ];
@@ -943,11 +1132,11 @@ const BottomNav = ({ activeTab, setActiveTab }) => {
           data-testid={`nav-tab-${tab.id}`}
         >
           <tab.icon 
-            className="w-6 h-6" 
+            className="w-5 h-5" 
             strokeWidth={activeTab === tab.id ? 3 : 2}
             style={{ color: activeTab === tab.id ? '#87CEEB' : undefined }}
           />
-          <span className="text-xs font-semibold">{tab.label}</span>
+          <span className="text-[10px] font-semibold">{tab.label}</span>
         </button>
       ))}
     </nav>
@@ -1126,6 +1315,9 @@ function AppContent() {
           completedDeeds={completedDeeds}
           onCompleteDeed={refreshData}
         />
+      )}
+      {activeTab === "games" && (
+        <MemoryGame />
       )}
       {activeTab === "analysis" && (
         <AnalysisScreen 

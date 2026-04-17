@@ -109,6 +109,7 @@ export const translations = {
     goodDeeds: "Good Deeds",
     feelings: "Feelings",
     me: "Me",
+    miniGames: "Games",
     
     // Supportive Messages
     msg1: "You are amazing just the way you are! ✨",
@@ -231,6 +232,7 @@ export const translations = {
     goodDeeds: "Добрые дела",
     feelings: "Чувства",
     me: "Я",
+    miniGames: "Игры",
     
     // Supportive Messages
     msg1: "Ты замечательный такой, какой есть! ✨",
@@ -323,6 +325,18 @@ export const translations = {
     pickPantsColor: "Шалбар түсін таңда",
     lockedItemsHint: "Көбірек ашу үшін ұпай жина!",
     points: "ұпай",
+    goodDeedsCompleted: "Жасалған жақсылықтар",
+    
+    // Mini Games
+    miniGames: "Мини ойындар",
+    memoryGame: "Жады ойыны",
+    findThePairs: "Бірдей жұптарды тап!",
+    moves: "Қадамдар",
+    pairs: "Жұптар",
+    playAgain: "Қайта ойна",
+    youWon: "Сен жеңдің!",
+    congratsMemory: "Керемет жады!",
+    earnedPoints: "Сен жинадың",
     
     // Analysis
     howYoureDoing: "Сенің жағдайың",
@@ -341,6 +355,7 @@ export const translations = {
     goodDeeds: "Жақсылық",
     feelings: "Сезімдер",
     me: "Мен",
+    miniGames: "Ойындар",
     
     // Supportive Messages
     msg1: "Сен өзің қалай болсаң, солай керемет! ✨",
