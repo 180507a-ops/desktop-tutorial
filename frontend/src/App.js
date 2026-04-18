@@ -11,12 +11,12 @@ import {
   User, 
   Check, 
   ChevronRight,
+  ChevronLeft,
   Star,
   Smile,
   Meh,
   Frown,
   AlertCircle,
-  Image as ImageIcon,
   Award,
   Globe,
   ChevronDown,
@@ -33,33 +33,212 @@ const API = `${BACKEND_URL}/api`;
 // Logo Component - Hand with Heart
 const AppLogo = ({ size = 80 }) => (
   <svg width={size} height={size} viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-    {/* Heart */}
+    <defs>
+      <linearGradient id="heartGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#FFB6C1" />
+        <stop offset="100%" stopColor="#FF91A4" />
+      </linearGradient>
+      <linearGradient id="handGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#87CEEB" />
+        <stop offset="100%" stopColor="#5DADE2" />
+      </linearGradient>
+    </defs>
     <path 
-      d="M50 35C50 25 40 15 30 20C20 25 20 40 30 50L50 70L70 50C80 40 80 25 70 20C60 15 50 25 50 35Z" 
-      fill="#4169E1"
-      className="animate-heart-beat"
+      d="M50 30C50 18 38 8 26 14C14 20 14 38 26 50L50 74L74 50C86 38 86 20 74 14C62 8 50 18 50 30Z" 
+      fill="url(#heartGrad)"
     />
-    {/* Hand */}
     <path 
-      d="M25 75C25 75 30 70 40 70H60C70 70 75 75 75 75L80 85C80 85 70 90 50 90C30 90 20 85 20 85L25 75Z" 
-      fill="#4169E1"
+      d="M30 78C30 78 36 72 46 72H54C64 72 70 78 70 78L74 88C74 88 64 94 50 94C36 94 26 88 26 88L30 78Z" 
+      fill="url(#handGrad)"
     />
     <path 
-      d="M35 75V65C35 63 37 61 40 61H60C63 61 65 63 65 65V75" 
-      fill="#4169E1"
+      d="M38 78V68C38 65 41 62 46 62H54C59 62 62 65 62 68V78" 
+      fill="url(#handGrad)"
     />
   </svg>
 );
 
-// Design Assets
-const ASSETS = {
-  streakBadge: "https://static.prod-images.emergentagent.com/jobs/bb226fb4-4779-4934-af23-4313df1205b3/images/4478c691c14f8311db5d44bb6372ed09849671be4ac968fc1616f184a6647028.png",
-  meme: "https://static.prod-images.emergentagent.com/jobs/bb226fb4-4779-4934-af23-4313df1205b3/images/20e048668d5d9dbf26765ed57e33180b76dc56b52dac829cce5b065a5257e5df.png",
-  goodDeedStar: "https://static.prod-images.emergentagent.com/jobs/bb226fb4-4779-4934-af23-4313df1205b3/images/598c2fc244c235ebbdc654568179842693dd702c40ae76754656dbda06f19fd0.png"
+// Detailed Avatar SVG Component with 5 face expressions
+const DetailedAvatar = ({ face = 0, hair = 0, shirt = 0, pants = 0, size = 150 }) => {
+  const hairColors = ['#8B4513', '#FFD700', '#1a1a1a', '#FF91A4', '#9B59B6', '#87CEEB', '#98D8AA', '#FF6B6B'];
+  const shirtColors = ['#FFB6C1', '#87CEEB', '#DDA0DD', '#98D8AA', '#FFD700', '#FF6B6B', '#9B59B6', '#5DADE2'];
+  const pantsColors = ['#4169E1', '#2B2D42', '#87CEEB', '#DDA0DD', '#FFB6C1', '#98D8AA', '#FFD700', '#FF91A4'];
+  
+  const hairColor = hairColors[hair] || hairColors[0];
+  const shirtColor = shirtColors[shirt] || shirtColors[0];
+  const pantsColor = pantsColors[pants] || pantsColors[0];
+
+  // Face expressions: 0=happy smile, 1=big laugh, 2=wink, 3=tongue out, 4=closed eyes smile
+  const renderFace = (faceType) => {
+    switch(faceType) {
+      case 0: // Happy smile - open eyes
+        return (
+          <>
+            {/* Eyes */}
+            <ellipse cx="42" cy="42" rx="4" ry="5" fill="#2B2D42"/>
+            <ellipse cx="58" cy="42" rx="4" ry="5" fill="#2B2D42"/>
+            <circle cx="43" cy="41" r="1.5" fill="white"/>
+            <circle cx="59" cy="41" r="1.5" fill="white"/>
+            {/* Smile */}
+            <path d="M40 52 Q50 62 60 52" stroke="#2B2D42" strokeWidth="3" fill="none" strokeLinecap="round"/>
+            {/* Blush */}
+            <ellipse cx="35" cy="50" rx="5" ry="3" fill="#FFB6C1" opacity="0.5"/>
+            <ellipse cx="65" cy="50" rx="5" ry="3" fill="#FFB6C1" opacity="0.5"/>
+          </>
+        );
+      case 1: // Big laugh - open mouth
+        return (
+          <>
+            {/* Happy eyes - curved */}
+            <path d="M38 42 Q42 38 46 42" stroke="#2B2D42" strokeWidth="3" fill="none" strokeLinecap="round"/>
+            <path d="M54 42 Q58 38 62 42" stroke="#2B2D42" strokeWidth="3" fill="none" strokeLinecap="round"/>
+            {/* Big open mouth */}
+            <ellipse cx="50" cy="55" rx="10" ry="8" fill="#2B2D42"/>
+            <ellipse cx="50" cy="52" rx="8" ry="4" fill="#FF6B6B"/>
+            {/* Blush */}
+            <ellipse cx="35" cy="48" rx="5" ry="3" fill="#FFB6C1" opacity="0.6"/>
+            <ellipse cx="65" cy="48" rx="5" ry="3" fill="#FFB6C1" opacity="0.6"/>
+          </>
+        );
+      case 2: // Wink
+        return (
+          <>
+            {/* Left eye open */}
+            <ellipse cx="42" cy="42" rx="4" ry="5" fill="#2B2D42"/>
+            <circle cx="43" cy="41" r="1.5" fill="white"/>
+            {/* Right eye wink */}
+            <path d="M54 43 Q58 40 62 43" stroke="#2B2D42" strokeWidth="3" fill="none" strokeLinecap="round"/>
+            {/* Playful smile */}
+            <path d="M42 52 Q50 60 58 52" stroke="#2B2D42" strokeWidth="3" fill="none" strokeLinecap="round"/>
+            {/* Blush */}
+            <ellipse cx="35" cy="50" rx="5" ry="3" fill="#FFB6C1" opacity="0.5"/>
+            <ellipse cx="65" cy="50" rx="5" ry="3" fill="#FFB6C1" opacity="0.5"/>
+          </>
+        );
+      case 3: // Tongue out
+        return (
+          <>
+            {/* Eyes */}
+            <ellipse cx="42" cy="42" rx="4" ry="5" fill="#2B2D42"/>
+            <ellipse cx="58" cy="42" rx="4" ry="5" fill="#2B2D42"/>
+            <circle cx="43" cy="41" r="1.5" fill="white"/>
+            <circle cx="59" cy="41" r="1.5" fill="white"/>
+            {/* Smile with tongue */}
+            <path d="M40 52 Q50 60 60 52" stroke="#2B2D42" strokeWidth="3" fill="none" strokeLinecap="round"/>
+            <ellipse cx="50" cy="58" rx="5" ry="6" fill="#FF91A4"/>
+            {/* Blush */}
+            <ellipse cx="35" cy="50" rx="5" ry="3" fill="#FFB6C1" opacity="0.5"/>
+            <ellipse cx="65" cy="50" rx="5" ry="3" fill="#FFB6C1" opacity="0.5"/>
+          </>
+        );
+      case 4: // Closed eyes happy
+        return (
+          <>
+            {/* Closed happy eyes */}
+            <path d="M38 42 Q42 46 46 42" stroke="#2B2D42" strokeWidth="3" fill="none" strokeLinecap="round"/>
+            <path d="M54 42 Q58 46 62 42" stroke="#2B2D42" strokeWidth="3" fill="none" strokeLinecap="round"/>
+            {/* Sweet smile */}
+            <path d="M40 52 Q50 62 60 52" stroke="#2B2D42" strokeWidth="3" fill="none" strokeLinecap="round"/>
+            {/* Rosy cheeks */}
+            <ellipse cx="35" cy="50" rx="6" ry="4" fill="#FFB6C1" opacity="0.6"/>
+            <ellipse cx="65" cy="50" rx="6" ry="4" fill="#FFB6C1" opacity="0.6"/>
+          </>
+        );
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <svg width={size} height={size * 1.4} viewBox="0 0 100 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id={`shirtGrad-${shirt}`} x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor={shirtColor} />
+          <stop offset="100%" stopColor={shirtColor} stopOpacity="0.8" />
+        </linearGradient>
+      </defs>
+      
+      {/* Hair back */}
+      <ellipse cx="50" cy="28" rx="28" ry="20" fill={hairColor}/>
+      
+      {/* Head */}
+      <ellipse cx="50" cy="45" rx="25" ry="28" fill="#FFDAB9"/>
+      
+      {/* Hair front/bangs */}
+      <path d={`M25 35 Q30 15 50 12 Q70 15 75 35 Q65 25 50 22 Q35 25 25 35`} fill={hairColor}/>
+      
+      {/* Face expression */}
+      {renderFace(face)}
+      
+      {/* Neck */}
+      <rect x="44" y="70" width="12" height="8" fill="#FFDAB9"/>
+      
+      {/* Body/Shirt */}
+      <path d={`M30 78 Q30 75 40 75 L60 75 Q70 75 70 78 L72 105 Q72 110 65 110 L35 110 Q28 110 28 105 Z`} fill={`url(#shirtGrad-${shirt})`}/>
+      
+      {/* Shirt collar */}
+      <path d="M44 75 L50 82 L56 75" stroke="white" strokeWidth="2" fill="none" opacity="0.5"/>
+      
+      {/* Arms */}
+      <ellipse cx="26" cy="90" rx="6" ry="15" fill={shirtColor}/>
+      <ellipse cx="74" cy="90" rx="6" ry="15" fill={shirtColor}/>
+      
+      {/* Hands */}
+      <circle cx="26" cy="105" r="5" fill="#FFDAB9"/>
+      <circle cx="74" cy="105" r="5" fill="#FFDAB9"/>
+      
+      {/* Pants */}
+      <path d={`M32 108 L30 135 Q30 140 35 140 L45 140 L48 115 L52 115 L55 140 L65 140 Q70 140 70 135 L68 108 Z`} fill={pantsColor}/>
+      
+      {/* Shoes */}
+      <ellipse cx="40" cy="140" rx="8" ry="4" fill="#2B2D42"/>
+      <ellipse cx="60" cy="140" rx="8" ry="4" fill="#2B2D42"/>
+    </svg>
+  );
 };
+
+// Face preview for selection
+const FacePreview = ({ faceType, selected, onClick }) => {
+  const faces = ['😊', '😄', '😉', '😜', '😌'];
+  const labels = ['Happy', 'Laugh', 'Wink', 'Playful', 'Peaceful'];
+  
+  return (
+    <motion.button
+      className={`avatar-option flex-col gap-1 ${selected ? 'selected' : ''}`}
+      onClick={onClick}
+      whileTap={{ scale: 0.95 }}
+    >
+      <span className="text-2xl">{faces[faceType]}</span>
+      <span className="text-[8px] text-[#6C757D]">{labels[faceType]}</span>
+    </motion.button>
+  );
+};
+
+// Motivational messages after check-in
+const MOTIVATION_MESSAGES = [
+  { emoji: "🌟", title: "Amazing!", subtitle: "You're doing great today!" },
+  { emoji: "💪", title: "So Brave!", subtitle: "Thanks for sharing your feelings!" },
+  { emoji: "🎉", title: "Awesome!", subtitle: "Have a wonderful day!" },
+  { emoji: "💖", title: "You Rock!", subtitle: "You are loved and special!" },
+  { emoji: "🌈", title: "Fantastic!", subtitle: "Keep being awesome!" },
+];
+
+// Slideshow images (placeholders)
+const SLIDESHOW_IMAGES = [
+  { id: 1, placeholder: "😊 Your meme #1 here!", gradient: "from-[#FFB6C1] to-[#DDA0DD]" },
+  { id: 2, placeholder: "🎉 Your meme #2 here!", gradient: "from-[#87CEEB] to-[#98D8AA]" },
+  { id: 3, placeholder: "⭐ Your meme #3 here!", gradient: "from-[#DDA0DD] to-[#87CEEB]" },
+];
 
 // Avatar items with unlock requirements
 const AVATAR_ITEMS = {
+  face: [
+    { id: 0, unlocked: true, cost: 0 },
+    { id: 1, unlocked: true, cost: 0 },
+    { id: 2, unlocked: true, cost: 0 },
+    { id: 3, unlocked: true, cost: 0 },
+    { id: 4, unlocked: true, cost: 0 },
+  ],
   hair: [
     { id: 0, color: "#8B4513", unlocked: true, cost: 0 },
     { id: 1, color: "#FFD700", unlocked: true, cost: 0 },
@@ -69,16 +248,6 @@ const AVATAR_ITEMS = {
     { id: 5, color: "#87CEEB", unlocked: false, cost: 50 },
     { id: 6, color: "#98D8AA", unlocked: false, cost: 100 },
     { id: 7, color: "#FF6B6B", unlocked: false, cost: 100 },
-  ],
-  face: [
-    { id: 0, emoji: "😊", unlocked: true, cost: 0 },
-    { id: 1, emoji: "😄", unlocked: true, cost: 0 },
-    { id: 2, emoji: "😎", unlocked: true, cost: 0 },
-    { id: 3, emoji: "🥳", unlocked: true, cost: 0 },
-    { id: 4, emoji: "😇", unlocked: false, cost: 50 },
-    { id: 5, emoji: "🤗", unlocked: false, cost: 50 },
-    { id: 6, emoji: "🤩", unlocked: false, cost: 100 },
-    { id: 7, emoji: "😜", unlocked: false, cost: 100 },
   ],
   shirt: [
     { id: 0, color: "#FFB6C1", unlocked: true, cost: 0 },
@@ -102,106 +271,6 @@ const AVATAR_ITEMS = {
   ],
 };
 
-// Avatar Character Component
-const AvatarCharacter = ({ hair, face, shirt, pants, size = 120 }) => {
-  const hairColor = AVATAR_ITEMS.hair[hair]?.color || AVATAR_ITEMS.hair[0].color;
-  const faceEmoji = AVATAR_ITEMS.face[face]?.emoji || AVATAR_ITEMS.face[0].emoji;
-  const shirtColor = AVATAR_ITEMS.shirt[shirt]?.color || AVATAR_ITEMS.shirt[0].color;
-  const pantsColor = AVATAR_ITEMS.pants[pants]?.color || AVATAR_ITEMS.pants[0].color;
-  
-  return (
-    <div className="relative" style={{ width: size, height: size * 1.5 }}>
-      {/* Hair */}
-      <div 
-        className="absolute rounded-full"
-        style={{
-          width: size * 0.7,
-          height: size * 0.35,
-          backgroundColor: hairColor,
-          top: 0,
-          left: '50%',
-          transform: 'translateX(-50%)',
-          borderRadius: '50% 50% 0 0',
-        }}
-      />
-      {/* Head */}
-      <div 
-        className="absolute rounded-full bg-[#FFDAB9] flex items-center justify-center"
-        style={{
-          width: size * 0.6,
-          height: size * 0.5,
-          top: size * 0.15,
-          left: '50%',
-          transform: 'translateX(-50%)',
-          fontSize: size * 0.3,
-        }}
-      >
-        {faceEmoji}
-      </div>
-      {/* Body/Shirt */}
-      <div 
-        className="absolute rounded-t-3xl"
-        style={{
-          width: size * 0.65,
-          height: size * 0.45,
-          backgroundColor: shirtColor,
-          top: size * 0.58,
-          left: '50%',
-          transform: 'translateX(-50%)',
-        }}
-      />
-      {/* Arms */}
-      <div 
-        className="absolute rounded-full"
-        style={{
-          width: size * 0.15,
-          height: size * 0.35,
-          backgroundColor: shirtColor,
-          top: size * 0.62,
-          left: size * 0.08,
-          transform: 'rotate(15deg)',
-        }}
-      />
-      <div 
-        className="absolute rounded-full"
-        style={{
-          width: size * 0.15,
-          height: size * 0.35,
-          backgroundColor: shirtColor,
-          top: size * 0.62,
-          right: size * 0.08,
-          transform: 'rotate(-15deg)',
-        }}
-      />
-      {/* Pants */}
-      <div 
-        className="absolute"
-        style={{
-          width: size * 0.65,
-          height: size * 0.35,
-          backgroundColor: pantsColor,
-          top: size * 0.95,
-          left: '50%',
-          transform: 'translateX(-50%)',
-          borderRadius: '0 0 30% 30%',
-        }}
-      />
-      {/* Legs gap */}
-      <div 
-        className="absolute"
-        style={{
-          width: size * 0.08,
-          height: size * 0.25,
-          backgroundColor: '#FFF5F8',
-          top: size * 1.05,
-          left: '50%',
-          transform: 'translateX(-50%)',
-        }}
-      />
-    </div>
-  );
-};
-
 // Mood emojis with scores
 const MOOD_OPTIONS = [
   { emoji: "😢", score: 1 },
@@ -218,41 +287,160 @@ const LanguageSelector = () => {
 
   return (
     <div className="relative" data-testid="language-selector">
-      <button
+      <motion.button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-3 py-2 rounded-full bg-white border-2 border-[#F0D4E0] hover:border-[#87CEEB] transition-all"
+        className="flex items-center gap-2 px-3 py-2 rounded-full glass hover:shadow-lg transition-all"
+        whileTap={{ scale: 0.95 }}
         data-testid="language-selector-btn"
       >
         <Globe className="w-4 h-4 text-[#87CEEB]" strokeWidth={3} />
         <span className="text-sm font-semibold text-[#2B2D42]">{languageNames[language]}</span>
-        <ChevronDown className={`w-4 h-4 text-[#6C757D] transition-transform ${isOpen ? 'rotate-180' : ''}`} />
-      </button>
+        <ChevronDown className={`w-4 h-4 text-[#6C757D] transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
+      </motion.button>
       
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="absolute top-full right-0 mt-2 bg-white rounded-2xl shadow-lg border-2 border-[#F0D4E0] overflow-hidden z-50"
+            initial={{ opacity: 0, y: -10, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -10, scale: 0.95 }}
+            className="absolute top-full right-0 mt-2 bg-white rounded-2xl shadow-xl border border-[#F0D4E0] overflow-hidden z-50"
           >
             {languages.map((lang) => (
-              <button
+              <motion.button
                 key={lang}
                 onClick={() => { setLanguage(lang); setIsOpen(false); }}
-                className={`w-full px-4 py-3 text-left hover:bg-[#F8E8EE] transition-colors flex items-center gap-2 ${language === lang ? 'bg-[#F8E8EE]' : ''}`}
+                className={`w-full px-5 py-3 text-left hover:bg-gradient-to-r hover:from-[#F8E8EE] hover:to-[#E8F4FD] transition-all flex items-center gap-2 ${language === lang ? 'bg-gradient-to-r from-[#F8E8EE] to-[#E8F4FD]' : ''}`}
+                whileHover={{ x: 4 }}
                 data-testid={`language-option-${lang}`}
               >
                 {language === lang && <Check className="w-4 h-4 text-[#98D8AA]" strokeWidth={3} />}
                 <span className={`text-sm font-semibold ${language === lang ? 'text-[#87CEEB]' : 'text-[#2B2D42]'}`}>
                   {languageNames[lang]}
                 </span>
-              </button>
+              </motion.button>
             ))}
           </motion.div>
         )}
       </AnimatePresence>
     </div>
+  );
+};
+
+// Slideshow Component
+const Slideshow = () => {
+  const { t } = useLanguage();
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % SLIDESHOW_IMAGES.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <div className="card">
+      <h3 className="font-bold text-[#2B2D42] mb-4 flex items-center gap-2" style={{ fontFamily: 'Fredoka, sans-serif' }}>
+        <Sparkles className="w-5 h-5 text-[#FFB6C1]" strokeWidth={3} />
+        {t('dailySmile')}
+      </h3>
+      
+      <div className="slideshow-container">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentSlide}
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -50 }}
+            transition={{ duration: 0.3 }}
+            className={`w-full aspect-video rounded-2xl bg-gradient-to-br ${SLIDESHOW_IMAGES[currentSlide].gradient} flex items-center justify-center`}
+          >
+            <div className="text-center text-white p-4">
+              <div className="text-4xl mb-2">{SLIDESHOW_IMAGES[currentSlide].placeholder.split(' ')[0]}</div>
+              <p className="font-semibold opacity-90">{SLIDESHOW_IMAGES[currentSlide].placeholder.slice(2)}</p>
+            </div>
+          </motion.div>
+        </AnimatePresence>
+        
+        {/* Navigation arrows */}
+        <button 
+          className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/80 flex items-center justify-center shadow-lg"
+          onClick={() => setCurrentSlide((prev) => (prev - 1 + SLIDESHOW_IMAGES.length) % SLIDESHOW_IMAGES.length)}
+        >
+          <ChevronLeft className="w-5 h-5 text-[#2B2D42]" />
+        </button>
+        <button 
+          className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/80 flex items-center justify-center shadow-lg"
+          onClick={() => setCurrentSlide((prev) => (prev + 1) % SLIDESHOW_IMAGES.length)}
+        >
+          <ChevronRight className="w-5 h-5 text-[#2B2D42]" />
+        </button>
+      </div>
+      
+      {/* Dots */}
+      <div className="slideshow-dots">
+        {SLIDESHOW_IMAGES.map((_, index) => (
+          <button
+            key={index}
+            className={`slideshow-dot ${currentSlide === index ? 'active' : ''}`}
+            onClick={() => setCurrentSlide(index)}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// Motivation Popup Component
+const MotivationPopup = ({ show, onClose }) => {
+  const [message] = useState(() => 
+    MOTIVATION_MESSAGES[Math.floor(Math.random() * MOTIVATION_MESSAGES.length)]
+  );
+
+  useEffect(() => {
+    if (show) {
+      const timer = setTimeout(onClose, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [show, onClose]);
+
+  return (
+    <AnimatePresence>
+      {show && (
+        <motion.div 
+          className="fixed inset-0 bg-slate-900/30 backdrop-blur-sm z-50 flex items-center justify-center p-6"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={onClose}
+        >
+          <Confetti recycle={false} numberOfPieces={150} colors={['#FFB6C1', '#87CEEB', '#DDA0DD', '#98D8AA', '#FFD700']} />
+          <motion.div 
+            className="motivation-popup max-w-xs"
+            initial={{ scale: 0.5, rotate: -10 }}
+            animate={{ scale: 1, rotate: 0 }}
+            exit={{ scale: 0.5, opacity: 0 }}
+            transition={{ type: "spring", damping: 15 }}
+          >
+            <motion.div 
+              className="text-7xl mb-4"
+              animate={{ 
+                scale: [1, 1.2, 1],
+                rotate: [0, 10, -10, 0]
+              }}
+              transition={{ duration: 0.6, repeat: 2 }}
+            >
+              {message.emoji}
+            </motion.div>
+            <h2 className="text-2xl font-bold text-[#2B2D42] mb-2" style={{ fontFamily: 'Fredoka, sans-serif' }}>
+              {message.title}
+            </h2>
+            <p className="text-[#6C757D]">{message.subtitle}</p>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };
 
@@ -264,10 +452,9 @@ const HomeDashboard = ({ user, onCheckIn, todayCheckin, refreshUser }) => {
   const [isBothered, setIsBothered] = useState(null);
   const [isSad, setIsSad] = useState(null);
   const [step, setStep] = useState(0);
-  const [showConfetti, setShowConfetti] = useState(false);
+  const [showMotivation, setShowMotivation] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // Get random supportive message based on language
   const getRandomMessage = () => {
     const msgKeys = ['msg1', 'msg2', 'msg3', 'msg4', 'msg5', 'msg6', 'msg7', 'msg8', 'msg9', 'msg10'];
     const randomKey = msgKeys[Math.floor(Math.random() * msgKeys.length)];
@@ -293,17 +480,14 @@ const HomeDashboard = ({ user, onCheckIn, todayCheckin, refreshUser }) => {
         is_bothered: isBothered === true,
         is_sad: isSad === true
       });
-      setShowConfetti(true);
-      setTimeout(() => {
-        setShowConfetti(false);
-        setShowCheckin(false);
-        setStep(0);
-        setMoodSelected(null);
-        setIsBothered(null);
-        setIsSad(null);
-        onCheckIn();
-        refreshUser();
-      }, 3000);
+      setShowCheckin(false);
+      setShowMotivation(true);
+      setStep(0);
+      setMoodSelected(null);
+      setIsBothered(null);
+      setIsSad(null);
+      onCheckIn();
+      refreshUser();
     } catch (error) {
       console.error("Check-in error:", error);
     }
@@ -311,13 +495,19 @@ const HomeDashboard = ({ user, onCheckIn, todayCheckin, refreshUser }) => {
   };
 
   return (
-    <div className="p-6 pb-24">
-      {showConfetti && <Confetti recycle={false} numberOfPieces={200} colors={['#FFB6C1', '#87CEEB', '#DDA0DD', '#98D8AA']} />}
+    <div className="p-6 pb-28 safe-bottom">
+      <MotivationPopup show={showMotivation} onClose={() => setShowMotivation(false)} />
       
-      {/* Header with Logo and Language Selector */}
-      <div className="flex items-center justify-between mb-6">
+      {/* Header */}
+      <motion.div 
+        className="flex items-center justify-between mb-6"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
         <div className="flex items-center gap-3">
-          <AppLogo size={50} />
+          <motion.div animate={{ rotate: [0, 5, -5, 0] }} transition={{ duration: 2, repeat: Infinity }}>
+            <AppLogo size={50} />
+          </motion.div>
           <div>
             <h1 className="text-xl font-bold text-[#2B2D42]" style={{ fontFamily: 'Fredoka, sans-serif' }}>
               {t('hi')}, {user.name}!
@@ -327,119 +517,142 @@ const HomeDashboard = ({ user, onCheckIn, todayCheckin, refreshUser }) => {
         </div>
         <div className="flex items-center gap-2">
           <LanguageSelector />
-          <div className="streak-badge" data-testid="streak-badge">
-            <Flame className="w-5 h-5 text-[#FF6B6B]" />
+          <motion.div 
+            className="streak-badge" 
+            data-testid="streak-badge"
+            whileHover={{ scale: 1.05 }}
+          >
+            <Flame className="w-5 h-5" />
             <span>{user.current_streak}</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Points Display */}
-      <div className="flex justify-center mb-6">
-        <div className="points-badge text-lg">
-          <Star className="w-5 h-5" />
-          <span>{user.total_checkins * 10} {t('points')}</span>
-        </div>
-      </div>
-
-      {/* Daily Check-in Card */}
-      {!todayCheckin?.checked_in ? (
-        <motion.div 
-          className="card mb-6 cursor-pointer border-2 border-[#FFB6C1]"
-          whileHover={{ scale: 1.02 }}
-          onClick={() => setShowCheckin(true)}
-          data-testid="daily-checkin-card"
-        >
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[#FFB6C1] to-[#87CEEB] flex items-center justify-center">
-              <Heart className="w-7 h-7 text-white" strokeWidth={3} />
-            </div>
-            <div className="flex-1">
-              <h3 className="font-bold text-[#2B2D42]" style={{ fontFamily: 'Fredoka, sans-serif' }}>
-                {t('dailyCheckin')}
-              </h3>
-              <p className="text-[#6C757D] text-sm">{t('tellMeHowYouFeel')}</p>
-            </div>
-            <ChevronRight className="text-[#FFB6C1]" />
-          </div>
-        </motion.div>
-      ) : (
-        <motion.div 
-          className="card mb-6 border-2 border-[#98D8AA]"
-          initial={{ scale: 0.9 }}
-          animate={{ scale: 1 }}
-        >
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-full bg-[#98D8AA] flex items-center justify-center">
-              <Check className="w-7 h-7 text-white" strokeWidth={3} />
-            </div>
-            <div>
-              <h3 className="font-bold text-[#2B2D42]" style={{ fontFamily: 'Fredoka, sans-serif' }}>
-                {t('alreadyCheckedIn')} {todayCheckin.checkin?.mood_emoji}
-              </h3>
-              <p className="text-[#6C757D] text-sm">{t('comeBackTomorrow')}</p>
-            </div>
-          </div>
-        </motion.div>
-      )}
-
-      {/* Supportive Message */}
-      <motion.div 
-        className="card mb-6 bg-gradient-to-r from-[#F8E8EE] to-[#E8F4FD]"
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        data-testid="supportive-message-card"
-      >
-        <div className="flex items-start gap-4">
-          <AppLogo size={48} />
-          <div>
-            <p className="text-[#2B2D42] font-semibold leading-relaxed">
-              {supportiveMessage}
-            </p>
-          </div>
+          </motion.div>
         </div>
       </motion.div>
 
-      {/* Fun Meme */}
+      {/* Points Display */}
       <motion.div 
-        className="card"
+        className="flex justify-center mb-6"
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.1 }}
+      >
+        <div className="points-badge text-lg px-6 py-2">
+          <Star className="w-5 h-5" />
+          <span>{user.total_checkins * 10} {t('points')}</span>
+        </div>
+      </motion.div>
+
+      {/* Daily Check-in Card */}
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        data-testid="daily-meme-card"
       >
-        <h3 className="font-bold text-[#2B2D42] mb-3" style={{ fontFamily: 'Fredoka, sans-serif' }}>
-          <ImageIcon className="inline w-5 h-5 mr-2 text-[#87CEEB]" strokeWidth={3} />
-          {t('dailySmile')}
-        </h3>
-        <img 
-          src={ASSETS.meme} 
-          alt="Fun meme" 
-          className="w-full rounded-2xl"
-        />
-        <p className="text-center text-[#6C757D] mt-3 text-sm">{t('yourMemesHere')}</p>
+        {!todayCheckin?.checked_in ? (
+          <motion.div 
+            className="card card-interactive mb-6"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => setShowCheckin(true)}
+            data-testid="daily-checkin-card"
+          >
+            <div className="flex items-center gap-4">
+              <motion.div 
+                className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#FFB6C1] to-[#87CEEB] flex items-center justify-center shadow-lg"
+                animate={{ scale: [1, 1.05, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              >
+                <Heart className="w-8 h-8 text-white" strokeWidth={3} />
+              </motion.div>
+              <div className="flex-1">
+                <h3 className="font-bold text-[#2B2D42] text-lg" style={{ fontFamily: 'Fredoka, sans-serif' }}>
+                  {t('dailyCheckin')}
+                </h3>
+                <p className="text-[#6C757D]">{t('tellMeHowYouFeel')}</p>
+              </div>
+              <ChevronRight className="text-[#FFB6C1] w-6 h-6" />
+            </div>
+          </motion.div>
+        ) : (
+          <motion.div 
+            className="card mb-6"
+            style={{ borderColor: '#98D8AA', borderWidth: '2px' }}
+            initial={{ scale: 0.9 }}
+            animate={{ scale: 1 }}
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#98D8AA] to-[#87CEEB] flex items-center justify-center shadow-lg">
+                <Check className="w-8 h-8 text-white" strokeWidth={3} />
+              </div>
+              <div>
+                <h3 className="font-bold text-[#2B2D42] text-lg" style={{ fontFamily: 'Fredoka, sans-serif' }}>
+                  {t('alreadyCheckedIn')} {todayCheckin.checkin?.mood_emoji}
+                </h3>
+                <p className="text-[#6C757D]">{t('comeBackTomorrow')}</p>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </motion.div>
+
+      {/* Supportive Message */}
+      <motion.div 
+        className="card mb-6"
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: 0.3 }}
+        data-testid="supportive-message-card"
+      >
+        <div className="flex items-start gap-4">
+          <motion.div animate={{ y: [0, -5, 0] }} transition={{ duration: 2, repeat: Infinity }}>
+            <AppLogo size={48} />
+          </motion.div>
+          <p className="text-[#2B2D42] font-semibold leading-relaxed flex-1">
+            {supportiveMessage}
+          </p>
+        </div>
+      </motion.div>
+
+      {/* Slideshow */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4 }}
+      >
+        <Slideshow />
       </motion.div>
 
       {/* Check-in Modal */}
       <AnimatePresence>
         {showCheckin && (
           <motion.div 
-            className="fixed inset-0 bg-slate-900/20 backdrop-blur-sm z-50 flex items-end"
+            className="fixed inset-0 bg-slate-900/30 backdrop-blur-sm z-50 flex items-end"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setShowCheckin(false)}
           >
             <motion.div 
-              className="bg-white w-full rounded-t-[2rem] p-6 pb-10"
+              className="bg-white w-full rounded-t-[2.5rem] p-6 pb-10 shadow-2xl"
               initial={{ y: "100%" }}
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
-              transition={{ type: "spring", damping: 25 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
               onClick={(e) => e.stopPropagation()}
             >
+              {/* Progress indicator */}
+              <div className="flex justify-center gap-2 mb-6">
+                {[0, 1, 2].map((s) => (
+                  <div 
+                    key={s} 
+                    className={`h-1.5 rounded-full transition-all duration-300 ${
+                      s <= step ? 'w-8 bg-gradient-to-r from-[#FFB6C1] to-[#87CEEB]' : 'w-4 bg-[#F0D4E0]'
+                    }`}
+                  />
+                ))}
+              </div>
+
               {step === 0 && (
-                <>
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                   <h2 className="text-2xl font-bold text-center text-[#2B2D42] mb-6" style={{ fontFamily: 'Fredoka, sans-serif' }}>
                     {t('howAreYouFeeling')}
                   </h2>
@@ -449,6 +662,7 @@ const HomeDashboard = ({ user, onCheckIn, todayCheckin, refreshUser }) => {
                         key={mood.score}
                         className={`emoji-btn ${moodSelected?.score === mood.score ? "selected" : ""}`}
                         whileTap={{ scale: 0.9 }}
+                        whileHover={{ scale: 1.1, rotate: Math.random() * 10 - 5 }}
                         onClick={() => handleMoodSelect(mood)}
                         data-testid={`mood-option-${mood.score}`}
                       >
@@ -456,62 +670,70 @@ const HomeDashboard = ({ user, onCheckIn, todayCheckin, refreshUser }) => {
                       </motion.button>
                     ))}
                   </div>
-                  <div className="flex justify-center gap-8 mt-4 text-sm text-[#6C757D]">
+                  <div className="flex justify-between mt-4 text-sm text-[#6C757D] px-4">
                     <span>{t('verySad')}</span>
                     <span>{t('amazing')}</span>
                   </div>
-                </>
+                </motion.div>
               )}
 
               {step === 1 && (
-                <>
+                <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
                   <h2 className="text-2xl font-bold text-center text-[#2B2D42] mb-6" style={{ fontFamily: 'Fredoka, sans-serif' }}>
                     {t('isAnyoneBothering')}
                   </h2>
                   <div className="flex justify-center gap-4">
-                    <button 
+                    <motion.button 
                       className={`toggle-btn ${isBothered === true ? "yes" : ""}`}
                       onClick={() => { setIsBothered(true); setStep(2); }}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
                       data-testid="bothered-yes-btn"
                     >
                       {t('yes')} 😔
-                    </button>
-                    <button 
+                    </motion.button>
+                    <motion.button 
                       className={`toggle-btn ${isBothered === false ? "no" : ""}`}
                       onClick={() => { setIsBothered(false); setStep(2); }}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
                       data-testid="bothered-no-btn"
                     >
                       {t('no')} 😊
-                    </button>
+                    </motion.button>
                   </div>
-                </>
+                </motion.div>
               )}
 
               {step === 2 && (
-                <>
+                <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
                   <h2 className="text-2xl font-bold text-center text-[#2B2D42] mb-6" style={{ fontFamily: 'Fredoka, sans-serif' }}>
                     {t('didYouFeelSad')}
                   </h2>
                   <div className="flex justify-center gap-4 mb-6">
-                    <button 
+                    <motion.button 
                       className={`toggle-btn ${isSad === true ? "yes" : ""}`}
                       onClick={() => setIsSad(true)}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
                       data-testid="sad-yes-btn"
                     >
                       {t('yes')} 😢
-                    </button>
-                    <button 
+                    </motion.button>
+                    <motion.button 
                       className={`toggle-btn ${isSad === false ? "no" : ""}`}
                       onClick={() => setIsSad(false)}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
                       data-testid="sad-no-btn"
                     >
                       {t('no')} 😄
-                    </button>
+                    </motion.button>
                   </div>
                   {isSad !== null && (
                     <motion.button
                       className="btn-primary w-full"
-                      initial={{ opacity: 0, y: 10 }}
+                      initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       onClick={handleSubmitCheckin}
                       disabled={loading}
@@ -520,7 +742,7 @@ const HomeDashboard = ({ user, onCheckIn, todayCheckin, refreshUser }) => {
                       {loading ? t('saving') : `${t('done')} 🎉`}
                     </motion.button>
                   )}
-                </>
+                </motion.div>
               )}
             </motion.div>
           </motion.div>
@@ -536,7 +758,6 @@ const GoodDeedsScreen = ({ user, completedDeeds, onCompleteDeed }) => {
   const [showCelebration, setShowCelebration] = useState(false);
   const [celebratedDeed, setCelebratedDeed] = useState(null);
 
-  // Translated deeds
   const deeds = [
     { id: "1", title: t('deed1Title'), description: t('deed1Desc'), points: 10 },
     { id: "2", title: t('deed2Title'), description: t('deed2Desc'), points: 15 },
@@ -575,13 +796,17 @@ const GoodDeedsScreen = ({ user, completedDeeds, onCompleteDeed }) => {
   };
 
   return (
-    <div className="p-6 pb-24">
+    <div className="p-6 pb-28 safe-bottom">
       {showCelebration && <Confetti recycle={false} numberOfPieces={150} colors={['#FFB6C1', '#87CEEB', '#DDA0DD', '#98D8AA']} />}
       
-      {/* Header with Language Selector */}
-      <div className="flex items-center justify-between mb-4">
+      {/* Header */}
+      <motion.div 
+        className="flex items-center justify-between mb-4"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#FFB6C1] to-[#87CEEB] flex items-center justify-center">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#FFB6C1] to-[#87CEEB] flex items-center justify-center shadow-lg">
             <Sparkles className="w-6 h-6 text-white" strokeWidth={3} />
           </div>
           <div>
@@ -592,18 +817,23 @@ const GoodDeedsScreen = ({ user, completedDeeds, onCompleteDeed }) => {
           </div>
         </div>
         <LanguageSelector />
-      </div>
+      </motion.div>
 
-      {/* Good Deeds Counter */}
-      <div className="flex justify-center mb-6">
-        <div className="bg-gradient-to-r from-[#98D8AA] to-[#87CEEB] px-6 py-3 rounded-2xl flex items-center gap-3">
-          <Trophy className="w-6 h-6 text-white" />
+      {/* Counter */}
+      <motion.div 
+        className="flex justify-center mb-6"
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.1 }}
+      >
+        <div className="bg-gradient-to-r from-[#98D8AA] to-[#87CEEB] px-8 py-4 rounded-2xl flex items-center gap-4 shadow-lg">
+          <Trophy className="w-8 h-8 text-white" />
           <div className="text-center">
-            <div className="text-2xl font-bold text-white">{completedDeeds.length}</div>
+            <div className="text-3xl font-bold text-white">{completedDeeds.length}</div>
             <div className="text-xs text-white/80">{t('goodDeedsCompleted')}</div>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       <div className="space-y-3">
         {deeds.map((deed, index) => (
@@ -616,13 +846,15 @@ const GoodDeedsScreen = ({ user, completedDeeds, onCompleteDeed }) => {
             onClick={() => handleComplete(deed)}
             data-testid={`deed-card-${deed.id}`}
           >
-            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-              isCompleted(deed.id) ? "bg-[#98D8AA]" : "bg-[#F8E8EE]"
+            <div className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-md ${
+              isCompleted(deed.id) 
+                ? "bg-gradient-to-br from-[#98D8AA] to-[#87CEEB]" 
+                : "bg-gradient-to-br from-[#F8E8EE] to-[#E8F4FD]"
             }`}>
               {isCompleted(deed.id) ? (
-                <Check className="w-5 h-5 text-white" strokeWidth={3} />
+                <Check className="w-6 h-6 text-white" strokeWidth={3} />
               ) : (
-                <Star className="w-5 h-5 text-[#FFB6C1]" strokeWidth={3} />
+                <Star className="w-6 h-6 text-[#FFB6C1]" strokeWidth={3} />
               )}
             </div>
             <div className="flex-1">
@@ -648,17 +880,17 @@ const GoodDeedsScreen = ({ user, completedDeeds, onCompleteDeed }) => {
             exit={{ opacity: 0 }}
           >
             <motion.div 
-              className="bg-white rounded-3xl p-8 text-center max-w-xs border-4 border-[#FFB6C1]"
-              initial={{ scale: 0.5 }}
-              animate={{ scale: 1 }}
+              className="motivation-popup max-w-xs"
+              initial={{ scale: 0.5, rotate: -10 }}
+              animate={{ scale: 1, rotate: 0 }}
               transition={{ type: "spring", damping: 15 }}
             >
               <motion.div 
-                className="w-24 h-24 mx-auto mb-4 rounded-full bg-gradient-to-br from-[#FFB6C1] to-[#87CEEB] flex items-center justify-center"
-                animate={{ rotate: [0, 10, -10, 0] }}
-                transition={{ duration: 0.5, repeat: 2 }}
+                className="text-6xl mb-4"
+                animate={{ rotate: [0, 15, -15, 0], scale: [1, 1.2, 1] }}
+                transition={{ duration: 0.6, repeat: 2 }}
               >
-                <Star className="w-12 h-12 text-white" />
+                ⭐
               </motion.div>
               <h2 className="text-2xl font-bold text-[#2B2D42] mb-2" style={{ fontFamily: 'Fredoka, sans-serif' }}>
                 {t('amazingCelebration')} 🎉
@@ -666,7 +898,7 @@ const GoodDeedsScreen = ({ user, completedDeeds, onCompleteDeed }) => {
               <p className="text-[#6C757D]">
                 {t('youCompleted')} {celebratedDeed.title}
               </p>
-              <p className="text-[#FFB6C1] font-bold mt-2 text-lg">+{celebratedDeed.points} {t('points')}</p>
+              <p className="text-[#FFB6C1] font-bold mt-2 text-xl">+{celebratedDeed.points} {t('points')}</p>
             </motion.div>
           </motion.div>
         )}
@@ -675,7 +907,7 @@ const GoodDeedsScreen = ({ user, completedDeeds, onCompleteDeed }) => {
   );
 };
 
-// Memory Game Component
+// Memory Game
 const MEMORY_CARDS = ['🌸', '🦋', '🌈', '⭐', '🎀', '💖', '🐱', '🌺'];
 
 const MemoryGame = () => {
@@ -690,7 +922,7 @@ const MemoryGame = () => {
   const initializeGame = useCallback(() => {
     const shuffled = [...MEMORY_CARDS, ...MEMORY_CARDS]
       .sort(() => Math.random() - 0.5)
-      .map((emoji, index) => ({ id: index, emoji, isFlipped: false }));
+      .map((emoji, index) => ({ id: index, emoji }));
     setCards(shuffled);
     setFlipped([]);
     setMatched([]);
@@ -715,11 +947,11 @@ const MemoryGame = () => {
       setMoves(m => m + 1);
       const [first, second] = newFlipped;
       if (cards[first].emoji === cards[second].emoji) {
-        setMatched(m => [...m, first, second]);
+        const newMatched = [...matched, first, second];
+        setMatched(newMatched);
         setFlipped([]);
         
-        // Check win condition
-        if (matched.length + 2 === cards.length) {
+        if (newMatched.length === cards.length) {
           setGameWon(true);
           setShowCelebration(true);
         }
@@ -732,13 +964,16 @@ const MemoryGame = () => {
   const isCardFlipped = (cardId) => flipped.includes(cardId) || matched.includes(cardId);
 
   return (
-    <div className="p-6 pb-24">
+    <div className="p-6 pb-28 safe-bottom">
       {showCelebration && <Confetti recycle={false} numberOfPieces={200} colors={['#FFB6C1', '#87CEEB', '#DDA0DD', '#98D8AA']} />}
       
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <motion.div 
+        className="flex items-center justify-between mb-6"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#DDA0DD] to-[#87CEEB] flex items-center justify-center">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#DDA0DD] to-[#87CEEB] flex items-center justify-center shadow-lg">
             <Gamepad2 className="w-6 h-6 text-white" strokeWidth={3} />
           </div>
           <div>
@@ -749,60 +984,75 @@ const MemoryGame = () => {
           </div>
         </div>
         <LanguageSelector />
-      </div>
+      </motion.div>
 
       {/* Stats */}
-      <div className="flex justify-center gap-4 mb-6">
-        <div className="bg-[#F8E8EE] px-4 py-2 rounded-xl text-center">
-          <div className="text-xl font-bold text-[#FF91A4]">{moves}</div>
+      <motion.div 
+        className="flex justify-center gap-4 mb-6"
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+      >
+        <div className="card py-3 px-6 text-center">
+          <div className="text-2xl font-bold text-[#FF91A4]">{moves}</div>
           <div className="text-xs text-[#6C757D]">{t('moves')}</div>
         </div>
-        <div className="bg-[#E8F4FD] px-4 py-2 rounded-xl text-center">
-          <div className="text-xl font-bold text-[#87CEEB]">{matched.length / 2}/{MEMORY_CARDS.length}</div>
+        <div className="card py-3 px-6 text-center">
+          <div className="text-2xl font-bold text-[#87CEEB]">{matched.length / 2}/{MEMORY_CARDS.length}</div>
           <div className="text-xs text-[#6C757D]">{t('pairs')}</div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Game Board */}
       <div className="grid grid-cols-4 gap-3 mb-6">
         {cards.map((card) => (
           <motion.button
             key={card.id}
-            className={`aspect-square rounded-2xl flex items-center justify-center text-3xl transition-all ${
+            className={`aspect-square rounded-2xl flex items-center justify-center text-3xl shadow-md ${
               isCardFlipped(card.id) 
-                ? 'bg-gradient-to-br from-[#FFB6C1] to-[#87CEEB]' 
-                : 'bg-[#F8E8EE] hover:bg-[#F0D4E0]'
-            } ${matched.includes(card.id) ? 'ring-4 ring-[#98D8AA]' : ''}`}
+                ? matched.includes(card.id)
+                  ? 'bg-gradient-to-br from-[#98D8AA] to-[#87CEEB]'
+                  : 'bg-gradient-to-br from-[#FFB6C1] to-[#87CEEB]'
+                : 'bg-gradient-to-br from-[#F8E8EE] to-[#E8F4FD]'
+            }`}
             onClick={() => handleCardClick(card.id)}
+            whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             data-testid={`memory-card-${card.id}`}
           >
-            <motion.span
-              initial={false}
-              animate={{ 
-                rotateY: isCardFlipped(card.id) ? 0 : 180,
-                opacity: isCardFlipped(card.id) ? 1 : 0
-              }}
-              transition={{ duration: 0.3 }}
-            >
-              {card.emoji}
-            </motion.span>
-            {!isCardFlipped(card.id) && (
-              <span className="text-[#FFB6C1]">?</span>
-            )}
+            <AnimatePresence mode="wait">
+              {isCardFlipped(card.id) ? (
+                <motion.span
+                  key="emoji"
+                  initial={{ rotateY: -90 }}
+                  animate={{ rotateY: 0 }}
+                  exit={{ rotateY: 90 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  {card.emoji}
+                </motion.span>
+              ) : (
+                <motion.span 
+                  key="question"
+                  className="text-[#FFB6C1] text-2xl font-bold"
+                >
+                  ?
+                </motion.span>
+              )}
+            </AnimatePresence>
           </motion.button>
         ))}
       </div>
 
-      {/* Play Again Button */}
-      <button
+      <motion.button
         className="btn-secondary w-full flex items-center justify-center gap-2"
         onClick={initializeGame}
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
         data-testid="play-again-btn"
       >
         <RotateCcw className="w-5 h-5" />
         {t('playAgain')}
-      </button>
+      </motion.button>
 
       {/* Win Modal */}
       <AnimatePresence>
@@ -814,14 +1064,14 @@ const MemoryGame = () => {
             exit={{ opacity: 0 }}
           >
             <motion.div 
-              className="bg-white rounded-3xl p-8 text-center max-w-xs border-4 border-[#98D8AA]"
-              initial={{ scale: 0.5 }}
-              animate={{ scale: 1 }}
+              className="motivation-popup max-w-xs"
+              initial={{ scale: 0.5, rotate: -10 }}
+              animate={{ scale: 1, rotate: 0 }}
               transition={{ type: "spring", damping: 15 }}
             >
               <motion.div 
                 className="text-6xl mb-4"
-                animate={{ rotate: [0, 10, -10, 0] }}
+                animate={{ rotate: [0, 10, -10, 0], scale: [1, 1.3, 1] }}
                 transition={{ duration: 0.5, repeat: 3 }}
               >
                 🎉
@@ -829,18 +1079,16 @@ const MemoryGame = () => {
               <h2 className="text-2xl font-bold text-[#2B2D42] mb-2" style={{ fontFamily: 'Fredoka, sans-serif' }}>
                 {t('youWon')}
               </h2>
-              <p className="text-[#6C757D] mb-2">
-                {t('congratsMemory')}
-              </p>
-              <p className="text-[#87CEEB] font-bold">
-                {moves} {t('moves')}
-              </p>
-              <button
+              <p className="text-[#6C757D] mb-2">{t('congratsMemory')}</p>
+              <p className="text-[#87CEEB] font-bold text-lg">{moves} {t('moves')}</p>
+              <motion.button
                 className="btn-primary mt-4"
                 onClick={initializeGame}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
                 {t('playAgain')}
-              </button>
+              </motion.button>
             </motion.div>
           </motion.div>
         )}
@@ -849,37 +1097,20 @@ const MemoryGame = () => {
   );
 };
 
-// Profile & Avatar Screen
+// Profile Screen with Detailed Avatar
 const ProfileScreen = ({ user, onUpdateAvatar }) => {
   const { t } = useLanguage();
-  const [avatarHair, setAvatarHair] = useState(user.avatar_hair || 0);
   const [avatarFace, setAvatarFace] = useState(user.avatar_face || 0);
+  const [avatarHair, setAvatarHair] = useState(user.avatar_hair || 0);
   const [avatarShirt, setAvatarShirt] = useState(user.avatar_clothes || 0);
   const [avatarPants, setAvatarPants] = useState(0);
   const [saving, setSaving] = useState(false);
-  const [unlockedItems, setUnlockedItems] = useState({
-    hair: [0, 1, 2, 3],
-    face: [0, 1, 2, 3],
-    shirt: [0, 1, 2, 3],
-    pants: [0, 1, 2, 3],
-  });
   
   const userPoints = user.total_checkins * 10;
 
   const isItemUnlocked = (category, id) => {
-    return unlockedItems[category].includes(id);
-  };
-
-  const handleSelectItem = (category, id) => {
-    if (!isItemUnlocked(category, id)) return;
-    
-    switch(category) {
-      case 'hair': setAvatarHair(id); break;
-      case 'face': setAvatarFace(id); break;
-      case 'shirt': setAvatarShirt(id); break;
-      case 'pants': setAvatarPants(id); break;
-      default: break;
-    }
+    const item = AVATAR_ITEMS[category]?.find(i => i.id === id);
+    return item?.unlocked || (item?.cost && userPoints >= item.cost);
   };
 
   const handleSave = async () => {
@@ -897,65 +1128,38 @@ const ProfileScreen = ({ user, onUpdateAvatar }) => {
     setSaving(false);
   };
 
-  const renderItemSelector = (category, items, selectedId, label) => (
-    <div className="card mb-4">
-      <h3 className="font-bold text-[#2B2D42] mb-3" style={{ fontFamily: 'Fredoka, sans-serif' }}>
-        {label}
-      </h3>
-      <div className="flex gap-2 flex-wrap">
-        {items.map((item) => {
-          const unlocked = isItemUnlocked(category, item.id);
-          return (
-            <button
-              key={item.id}
-              className={`avatar-option ${selectedId === item.id ? "selected" : ""} ${!unlocked ? "locked" : ""}`}
-              style={{ backgroundColor: item.color || '#F8E8EE' }}
-              onClick={() => handleSelectItem(category, item.id)}
-              data-testid={`${category}-option-${item.id}`}
-              disabled={!unlocked}
-            >
-              {item.emoji && <span className="text-2xl">{item.emoji}</span>}
-              {!unlocked && (
-                <div className="absolute inset-0 bg-slate-900/30 rounded-xl flex items-center justify-center">
-                  <Lock className="w-5 h-5 text-white" />
-                </div>
-              )}
-            </button>
-          );
-        })}
-      </div>
-      {items.some(item => !isItemUnlocked(category, item.id)) && (
-        <p className="text-xs text-[#6C757D] mt-2 flex items-center gap-1">
-          <Lock className="w-3 h-3" /> {t('lockedItemsHint') || "Earn points to unlock more!"}
-        </p>
-      )}
-    </div>
-  );
-
   return (
-    <div className="p-6 pb-24">
-      {/* Header with Language Selector */}
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-xl font-bold text-[#2B2D42]" style={{ fontFamily: 'Fredoka, sans-serif' }}>
-          <User className="inline w-6 h-6 mr-2 text-[#87CEEB]" strokeWidth={3} />
+    <div className="p-6 pb-28 safe-bottom">
+      <motion.div 
+        className="flex items-center justify-between mb-6"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
+        <h1 className="text-xl font-bold text-[#2B2D42] flex items-center gap-2" style={{ fontFamily: 'Fredoka, sans-serif' }}>
+          <User className="w-6 h-6 text-[#87CEEB]" strokeWidth={3} />
           {t('yourProfile')}
         </h1>
         <LanguageSelector />
-      </div>
+      </motion.div>
 
       {/* Avatar Preview */}
       <motion.div 
         className="card mb-6 flex flex-col items-center py-6"
-        initial={{ scale: 0.9 }}
-        animate={{ scale: 1 }}
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
       >
-        <AvatarCharacter 
-          hair={avatarHair}
-          face={avatarFace}
-          shirt={avatarShirt}
-          pants={avatarPants}
-          size={100}
-        />
+        <motion.div
+          animate={{ y: [0, -5, 0] }}
+          transition={{ duration: 2, repeat: Infinity }}
+        >
+          <DetailedAvatar 
+            face={avatarFace}
+            hair={avatarHair}
+            shirt={avatarShirt}
+            pants={avatarPants}
+            size={120}
+          />
+        </motion.div>
         <h2 className="text-xl font-bold text-[#2B2D42] mt-4" style={{ fontFamily: 'Fredoka, sans-serif' }}>
           {user.name}
         </h2>
@@ -965,42 +1169,149 @@ const ProfileScreen = ({ user, onUpdateAvatar }) => {
         </div>
       </motion.div>
 
-      {/* Avatar Customization */}
-      {renderItemSelector('hair', AVATAR_ITEMS.hair, avatarHair, t('pickHairColor'))}
-      {renderItemSelector('face', AVATAR_ITEMS.face, avatarFace, t('pickYourFace'))}
-      {renderItemSelector('shirt', AVATAR_ITEMS.shirt, avatarShirt, t('pickClothesColor'))}
-      {renderItemSelector('pants', AVATAR_ITEMS.pants, avatarPants, t('pickPantsColor') || "Pick Pants Color")}
+      {/* Face Selection */}
+      <motion.div 
+        className="card mb-4"
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: 0.1 }}
+      >
+        <h3 className="font-bold text-[#2B2D42] mb-3" style={{ fontFamily: 'Fredoka, sans-serif' }}>
+          {t('pickYourFace')}
+        </h3>
+        <div className="flex gap-2 flex-wrap">
+          {AVATAR_ITEMS.face.map((item) => (
+            <FacePreview
+              key={item.id}
+              faceType={item.id}
+              selected={avatarFace === item.id}
+              onClick={() => setAvatarFace(item.id)}
+            />
+          ))}
+        </div>
+      </motion.div>
+
+      {/* Hair Selection */}
+      <motion.div 
+        className="card mb-4"
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: 0.2 }}
+      >
+        <h3 className="font-bold text-[#2B2D42] mb-3" style={{ fontFamily: 'Fredoka, sans-serif' }}>
+          {t('pickHairColor')}
+        </h3>
+        <div className="flex gap-2 flex-wrap">
+          {AVATAR_ITEMS.hair.map((item) => {
+            const unlocked = isItemUnlocked('hair', item.id);
+            return (
+              <motion.button
+                key={item.id}
+                className={`avatar-option ${avatarHair === item.id ? 'selected' : ''} ${!unlocked ? 'locked' : ''}`}
+                style={{ backgroundColor: item.color }}
+                onClick={() => unlocked && setAvatarHair(item.id)}
+                whileTap={unlocked ? { scale: 0.95 } : {}}
+                data-testid={`hair-option-${item.id}`}
+              />
+            );
+          })}
+        </div>
+      </motion.div>
+
+      {/* Shirt Selection */}
+      <motion.div 
+        className="card mb-4"
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: 0.3 }}
+      >
+        <h3 className="font-bold text-[#2B2D42] mb-3" style={{ fontFamily: 'Fredoka, sans-serif' }}>
+          {t('pickClothesColor')}
+        </h3>
+        <div className="flex gap-2 flex-wrap">
+          {AVATAR_ITEMS.shirt.map((item) => {
+            const unlocked = isItemUnlocked('shirt', item.id);
+            return (
+              <motion.button
+                key={item.id}
+                className={`avatar-option ${avatarShirt === item.id ? 'selected' : ''} ${!unlocked ? 'locked' : ''}`}
+                style={{ backgroundColor: item.color }}
+                onClick={() => unlocked && setAvatarShirt(item.id)}
+                whileTap={unlocked ? { scale: 0.95 } : {}}
+                data-testid={`shirt-option-${item.id}`}
+              />
+            );
+          })}
+        </div>
+      </motion.div>
+
+      {/* Pants Selection */}
+      <motion.div 
+        className="card mb-6"
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: 0.4 }}
+      >
+        <h3 className="font-bold text-[#2B2D42] mb-3" style={{ fontFamily: 'Fredoka, sans-serif' }}>
+          {t('pickPantsColor')}
+        </h3>
+        <div className="flex gap-2 flex-wrap">
+          {AVATAR_ITEMS.pants.map((item) => {
+            const unlocked = isItemUnlocked('pants', item.id);
+            return (
+              <motion.button
+                key={item.id}
+                className={`avatar-option ${avatarPants === item.id ? 'selected' : ''} ${!unlocked ? 'locked' : ''}`}
+                style={{ backgroundColor: item.color }}
+                onClick={() => unlocked && setAvatarPants(item.id)}
+                whileTap={unlocked ? { scale: 0.95 } : {}}
+                data-testid={`pants-option-${item.id}`}
+              />
+            );
+          })}
+        </div>
+        <p className="text-xs text-[#6C757D] mt-3 flex items-center gap-1">
+          <Lock className="w-3 h-3" /> {t('lockedItemsHint')}
+        </p>
+      </motion.div>
 
       {/* Stats */}
-      <div className="card mb-6">
-        <h3 className="font-bold text-[#2B2D42] mb-4" style={{ fontFamily: 'Fredoka, sans-serif' }}>
-          <Award className="inline w-5 h-5 mr-2 text-[#FFB6C1]" strokeWidth={3} />
+      <motion.div 
+        className="card mb-6"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5 }}
+      >
+        <h3 className="font-bold text-[#2B2D42] mb-4 flex items-center gap-2" style={{ fontFamily: 'Fredoka, sans-serif' }}>
+          <Award className="w-5 h-5 text-[#FFB6C1]" strokeWidth={3} />
           {t('yourStats')}
         </h3>
         <div className="grid grid-cols-3 gap-4 text-center">
-          <div>
+          <div className="card py-3">
             <div className="text-2xl font-bold text-[#FF91A4]">{user.current_streak}</div>
             <div className="text-xs text-[#6C757D]">{t('currentStreak')}</div>
           </div>
-          <div>
+          <div className="card py-3">
             <div className="text-2xl font-bold text-[#87CEEB]">{user.longest_streak}</div>
             <div className="text-xs text-[#6C757D]">{t('longestStreak')}</div>
           </div>
-          <div>
+          <div className="card py-3">
             <div className="text-2xl font-bold text-[#98D8AA]">{user.total_checkins}</div>
             <div className="text-xs text-[#6C757D]">{t('totalCheckins')}</div>
           </div>
         </div>
-      </div>
+      </motion.div>
 
-      <button 
+      <motion.button 
         className="btn-primary w-full"
         onClick={handleSave}
         disabled={saving}
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
         data-testid="save-avatar-btn"
       >
         {saving ? t('loading') : t('saveChanges')}
-      </button>
+      </motion.button>
     </div>
   );
 };
@@ -1026,32 +1337,40 @@ const AnalysisScreen = ({ user, analysis, checkins }) => {
   };
 
   return (
-    <div className="p-6 pb-24">
-      {/* Header with Language Selector */}
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-xl font-bold text-[#2B2D42]" style={{ fontFamily: 'Fredoka, sans-serif' }}>
-          <Heart className="inline w-6 h-6 mr-2 text-[#FFB6C1]" strokeWidth={3} />
+    <div className="p-6 pb-28 safe-bottom">
+      <motion.div 
+        className="flex items-center justify-between mb-6"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
+        <h1 className="text-xl font-bold text-[#2B2D42] flex items-center gap-2" style={{ fontFamily: 'Fredoka, sans-serif' }}>
+          <Heart className="w-6 h-6 text-[#FFB6C1]" strokeWidth={3} />
           {t('howYoureDoing')}
         </h1>
         <LanguageSelector />
-      </div>
+      </motion.div>
 
       {/* Overall Score */}
       <motion.div 
-        className="card mb-6 text-center bg-gradient-to-br from-[#F8E8EE] to-[#E8F4FD]"
-        initial={{ scale: 0.9 }}
-        animate={{ scale: 1 }}
+        className="card mb-6 text-center"
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
       >
-        <div className="flex items-center justify-center gap-3 mb-2">
+        <div className="flex items-center justify-center gap-3 mb-3">
           {getTrendIcon()}
           <span className="text-lg font-bold text-[#2B2D42]" style={{ fontFamily: 'Fredoka, sans-serif' }}>
             {getTrendLabel()}
           </span>
         </div>
-        <div className="text-5xl font-bold text-[#87CEEB] mb-2" data-testid="overall-score">
+        <motion.div 
+          className="text-6xl font-bold bg-gradient-to-r from-[#FFB6C1] via-[#87CEEB] to-[#98D8AA] bg-clip-text text-transparent mb-2"
+          animate={{ scale: [1, 1.05, 1] }}
+          transition={{ duration: 2, repeat: Infinity }}
+          data-testid="overall-score"
+        >
           {analysis?.overall_score || 0}/5
-        </div>
-        <p className="text-[#6C757D] text-sm">
+        </motion.div>
+        <p className="text-[#6C757D]">
           {analysis?.positive_days || 0} {t('outOf')} {analysis?.total_days || 0} {t('daysWereGreat')}
         </p>
       </motion.div>
@@ -1059,7 +1378,8 @@ const AnalysisScreen = ({ user, analysis, checkins }) => {
       {/* Alerts */}
       {analysis?.alerts?.length > 0 && (
         <motion.div 
-          className="card mb-6 border-2 border-[#FF91A4]"
+          className="card mb-6"
+          style={{ borderColor: '#FF91A4', borderWidth: '2px' }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
         >
@@ -1069,43 +1389,52 @@ const AnalysisScreen = ({ user, analysis, checkins }) => {
               <h3 className="font-bold text-[#2B2D42] mb-2" style={{ fontFamily: 'Fredoka, sans-serif' }}>
                 {t('friendlyReminder')}
               </h3>
-              <p className="text-[#6C757D] text-sm">
-                {t('reminderText')}
-              </p>
+              <p className="text-[#6C757D] text-sm">{t('reminderText')}</p>
             </div>
           </div>
         </motion.div>
       )}
 
       {/* Recent Check-ins */}
-      <div className="card">
+      <motion.div 
+        className="card"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+      >
         <h3 className="font-bold text-[#2B2D42] mb-4" style={{ fontFamily: 'Fredoka, sans-serif' }}>
           {t('recentFeelings')}
         </h3>
-        <div className="space-y-3">
+        <div className="space-y-4">
           {checkins?.slice(0, 7).map((checkin, i) => (
-            <div key={checkin.id} className="flex items-center gap-3">
-              <span className="text-2xl">{checkin.mood_emoji}</span>
+            <motion.div 
+              key={checkin.id} 
+              className="flex items-center gap-3"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: i * 0.05 }}
+            >
+              <span className="text-3xl">{checkin.mood_emoji}</span>
               <div className="flex-1">
                 <div className="progress-bar">
-                  <div 
+                  <motion.div 
                     className="progress-bar-fill" 
-                    style={{ width: `${(checkin.mood_score / 5) * 100}%` }}
+                    initial={{ width: 0 }}
+                    animate={{ width: `${(checkin.mood_score / 5) * 100}%` }}
+                    transition={{ delay: i * 0.1, duration: 0.5 }}
                   />
                 </div>
               </div>
-              <span className="text-xs text-[#6C757D]">
+              <span className="text-xs text-[#6C757D] font-medium">
                 {new Date(checkin.date).toLocaleDateString("en-US", { weekday: "short" })}
               </span>
-            </div>
+            </motion.div>
           ))}
           {(!checkins || checkins.length === 0) && (
-            <p className="text-center text-[#6C757D] py-4">
-              {t('noCheckinsYet')}
-            </p>
+            <p className="text-center text-[#6C757D] py-4">{t('noCheckinsYet')}</p>
           )}
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };
@@ -1123,21 +1452,25 @@ const BottomNav = ({ activeTab, setActiveTab }) => {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t-2 border-[#F0D4E0] flex max-w-md mx-auto" data-testid="bottom-navigation">
+    <nav className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-lg border-t border-[#F0D4E0] flex max-w-md mx-auto shadow-2xl" data-testid="bottom-navigation">
       {tabs.map((tab) => (
-        <button
+        <motion.button
           key={tab.id}
           className={`nav-tab ${activeTab === tab.id ? "active" : ""}`}
           onClick={() => setActiveTab(tab.id)}
+          whileTap={{ scale: 0.9 }}
           data-testid={`nav-tab-${tab.id}`}
         >
-          <tab.icon 
-            className="w-5 h-5" 
-            strokeWidth={activeTab === tab.id ? 3 : 2}
-            style={{ color: activeTab === tab.id ? '#87CEEB' : undefined }}
-          />
+          <motion.div
+            animate={activeTab === tab.id ? { y: -2 } : { y: 0 }}
+          >
+            <tab.icon 
+              className="w-5 h-5" 
+              strokeWidth={activeTab === tab.id ? 3 : 2}
+            />
+          </motion.div>
           <span className="text-[10px] font-semibold">{tab.label}</span>
-        </button>
+        </motion.button>
       ))}
     </nav>
   );
@@ -1145,7 +1478,6 @@ const BottomNav = ({ activeTab, setActiveTab }) => {
 
 // Main App Content
 function AppContent() {
-  const { t } = useLanguage();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("home");
@@ -1167,12 +1499,10 @@ function AppContent() {
 
   const createDemoUser = useCallback(async () => {
     try {
-      // Try to get existing demo user first
       const existingUser = await axios.get(`${API}/users/email/demo@thefriend.app`);
       localStorage.setItem("userId", existingUser.data.id);
       return existingUser.data;
     } catch {
-      // Create new demo user
       try {
         const response = await axios.post(`${API}/users`, {
           name: "Demo",
@@ -1234,7 +1564,6 @@ function AppContent() {
         userData = await fetchUser(storedUserId);
       }
       
-      // Auto-create demo user if no user exists (skip registration)
       if (!userData) {
         userData = await createDemoUser();
         if (userData) {
@@ -1274,23 +1603,28 @@ function AppContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#FFF5F8] flex flex-col items-center justify-center">
+      <div className="min-h-screen flex flex-col items-center justify-center">
         <motion.div
-          animate={{ scale: [1, 1.1, 1] }}
+          animate={{ scale: [1, 1.1, 1], rotate: [0, 5, -5, 0] }}
           transition={{ duration: 1.5, repeat: Infinity }}
         >
           <AppLogo size={100} />
         </motion.div>
-        <h2 className="text-xl font-bold text-[#2B2D42] mt-4" style={{ fontFamily: 'Fredoka, sans-serif' }}>
+        <motion.h2 
+          className="text-xl font-bold text-[#2B2D42] mt-4"
+          style={{ fontFamily: 'Fredoka, sans-serif' }}
+          animate={{ opacity: [0.5, 1, 0.5] }}
+          transition={{ duration: 1.5, repeat: Infinity }}
+        >
           The FRIEND app
-        </h2>
+        </motion.h2>
       </div>
     );
   }
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-[#FFF5F8] flex flex-col items-center justify-center p-6">
+      <div className="min-h-screen flex flex-col items-center justify-center p-6">
         <AppLogo size={100} />
         <h2 className="text-xl font-bold text-[#2B2D42] mt-4" style={{ fontFamily: 'Fredoka, sans-serif' }}>
           Loading...
@@ -1300,44 +1634,56 @@ function AppContent() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FFF5F8] max-w-md mx-auto relative">
-      {activeTab === "home" && (
-        <HomeDashboard 
-          user={user}
-          onCheckIn={refreshData}
-          todayCheckin={todayCheckin}
-          refreshUser={refreshUser}
-        />
-      )}
-      {activeTab === "deeds" && (
-        <GoodDeedsScreen 
-          user={user}
-          completedDeeds={completedDeeds}
-          onCompleteDeed={refreshData}
-        />
-      )}
-      {activeTab === "games" && (
-        <MemoryGame />
-      )}
-      {activeTab === "analysis" && (
-        <AnalysisScreen 
-          user={user}
-          analysis={analysis}
-          checkins={checkins}
-        />
-      )}
-      {activeTab === "profile" && (
-        <ProfileScreen 
-          user={user}
-          onUpdateAvatar={refreshUser}
-        />
-      )}
+    <div className="min-h-screen max-w-md mx-auto relative">
+      <AnimatePresence mode="wait">
+        {activeTab === "home" && (
+          <motion.div key="home" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <HomeDashboard 
+              user={user}
+              onCheckIn={refreshData}
+              todayCheckin={todayCheckin}
+              refreshUser={refreshUser}
+            />
+          </motion.div>
+        )}
+        {activeTab === "deeds" && (
+          <motion.div key="deeds" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <GoodDeedsScreen 
+              user={user}
+              completedDeeds={completedDeeds}
+              onCompleteDeed={refreshData}
+            />
+          </motion.div>
+        )}
+        {activeTab === "games" && (
+          <motion.div key="games" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <MemoryGame />
+          </motion.div>
+        )}
+        {activeTab === "analysis" && (
+          <motion.div key="analysis" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <AnalysisScreen 
+              user={user}
+              analysis={analysis}
+              checkins={checkins}
+            />
+          </motion.div>
+        )}
+        {activeTab === "profile" && (
+          <motion.div key="profile" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <ProfileScreen 
+              user={user}
+              onUpdateAvatar={refreshUser}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
       <BottomNav activeTab={activeTab} setActiveTab={setActiveTab} />
     </div>
   );
 }
 
-// Main App with Language Provider
+// Main App
 function App() {
   return (
     <LanguageProvider>
